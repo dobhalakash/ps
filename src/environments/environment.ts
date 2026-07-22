@@ -6,7 +6,7 @@ export const environment = {
   // 'basic' | 'standard' | 'premium' - controls which features are enabled
   edition: 'premium' as 'basic' | 'standard' | 'premium',
   production: false,
-  apiUrl: "http://localhost:8081/api",
+  apiUrl: "https://backendparas-production.up.railway.app",
   // Publishable OAuth client IDs only (safe to expose in frontend code -
   // these identify your app to the provider, they are not secrets).
   // Replace with your real values; sign-in buttons render either way but

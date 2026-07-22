@@ -68,9 +68,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
 
   /* ── Category circles (matches TrackHub mockup) ── */
-  catCircles = [
+  catCircles = [ { label: 'Cricket',     icon: 'fa-solid fa-baseball-bat-ball', path: '/products', params: { category: 'cricket' } }, 
     { label: 'Football',    icon: 'fa-solid fa-futbol',            path: '/products', params: { category: 'football' } },
-    { label: 'Cricket',     icon: 'fa-solid fa-baseball-bat-ball', path: '/products', params: { category: 'cricket' } },
     { label: 'Running',     icon: 'fa-solid fa-person-running',    path: '/products', params: { category: 'running' } },
     { label: 'Fitness',     icon: 'fa-solid fa-dumbbell',          path: '/products', params: { category: 'fitness' } },
     { label: 'Basketball',  icon: 'fa-solid fa-basketball',        path: '/products', params: { category: 'basketball' } },
@@ -86,7 +85,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       bg: '#15181d', params: { category: 'running' }
     },
     {
-      tag: 'Up To', title: '50% Off', subtitle: 'On selected items. Limited time offer!',
+      tag: 'Up To', title: '20% Off', subtitle: 'On selected items. Limited time offer!',
       bg: 'linear-gradient(135deg, #0088CC 0%, #00B4D8 100%)', params: { sortBy: 'trending' }
     },
     {

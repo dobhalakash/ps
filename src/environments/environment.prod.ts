@@ -5,7 +5,7 @@ export const environment = {
   // 'basic' | 'standard' | 'premium' - controls which features are enabled
   edition: 'premium' as 'basic' | 'standard' | 'premium',
   production: true,
-  apiUrl: "http://localhost:8081/api",
+  apiUrl: "https://backendparas-production.up.railway.app",
   googleClientId: '775981559964-q5281jmae49oo0f2nek7lpuj0t2nsvca.apps.googleusercontent.com',
   facebookAppId: 'DUMMY_FACEBOOK_APP_ID',
   appleClientId: 'com.sksports.dummy.service'
