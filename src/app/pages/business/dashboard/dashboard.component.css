@@ -1,0 +1,39 @@
+.th-business-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.th-stat-warning {
+  color: var(--th-orange) !important;
+}
+
+.th-alert-card {
+  padding: 1rem 1.25rem;
+  color: var(--th-orange);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.th-alert-card a {
+  margin-left: auto;
+  color: var(--th-navy);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.th-payment-settings-card {
+  margin-top: 2rem;
+  max-width: 560px;
+}
+
+.th-payment-settings-intro {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}

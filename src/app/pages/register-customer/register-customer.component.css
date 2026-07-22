@@ -1,0 +1,195 @@
+.sk-auth-page {
+  display: grid;
+  grid-template-columns: minmax(380px, 480px) 1fr;
+  min-height: calc(100vh - 60px);
+  background: #0c0f14;
+}
+
+.sk-auth-panel {
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-auth-title {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: .02em;
+  margin: 0 0 8px;
+}
+.sk-auth-title span { color: var(--th-blue); }
+
+.sk-auth-subtitle {
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 0 0 28px;
+}
+
+.sk-auth-form { display: flex; flex-direction: column; gap: 14px; }
+
+.sk-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.sk-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #15181d;
+  border: 1px solid #2a2f38;
+  border-radius: 8px;
+  height: 48px;
+  transition: border-color .15s ease;
+}
+.sk-input-group:focus-within { border-color: var(--th-blue); }
+.sk-input-group i:first-child {
+  color: #6b7280;
+  font-size: 14px;
+  margin-left: 16px;
+}
+.sk-input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 0 14px;
+  font-family: var(--font-body);
+}
+.sk-input-group input::placeholder { color: #6b7280; }
+
+.sk-input-eye {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0 14px;
+  font-size: 14px;
+}
+.sk-input-eye:hover { color: #fff; }
+
+.sk-password-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: -2px 0 4px;
+}
+.sk-password-label {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 2px;
+}
+.sk-password-rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #6b7280;
+}
+.sk-password-rule i { font-size: 13px; }
+.sk-password-rule.met { color: #4ade80; }
+.sk-password-rule.met i { color: #4ade80; }
+
+.sk-error-text {
+  color: #f87171;
+  font-size: 13px;
+  margin: 0;
+}
+
+.sk-btn-primary {
+  background: var(--th-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  height: 50px;
+  font-weight: 800;
+  font-size: 13.5px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .15s ease;
+  margin-top: 4px;
+}
+.sk-btn-primary:hover:not(:disabled) { background: var(--th-blue-dark); }
+.sk-btn-primary:disabled { opacity: .6; cursor: default; }
+
+.sk-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin: 22px 0;
+}
+.sk-auth-divider::before,
+.sk-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #2a2f38;
+}
+.sk-auth-divider span { padding: 0 14px; }
+
+.sk-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sk-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid #2a2f38;
+  background: #fff;
+  color: #15181d;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.sk-social-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.sk-social-btn:disabled { opacity: .6; cursor: default; }
+.sk-social-btn--google i { color: #ea4335; font-size: 16px; }
+.sk-social-btn--facebook { background: #1877f2; color: #fff; border-color: #1877f2; }
+.sk-social-btn--facebook i { font-size: 16px; }
+.sk-social-btn--apple { background: #000; color: #fff; border-color: #000; }
+.sk-social-btn--apple i { font-size: 16px; }
+
+.sk-auth-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 14px 0 0;
+}
+.sk-auth-footer a { color: var(--th-blue); font-weight: 600; text-decoration: none; }
+.sk-auth-footer a:hover { text-decoration: underline; }
+.sk-auth-footer--muted { margin-top: 6px; font-size: 12px; }
+
+.sk-auth-visual {
+  background:
+    linear-gradient(120deg, rgba(12,15,20,.15) 0%, rgba(12,15,20,.75) 100%),
+    url('/assets/slider.png') center/cover no-repeat;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .sk-auth-page { grid-template-columns: 1fr; }
+  .sk-auth-visual { display: none; }
+  .sk-auth-panel { padding: 32px 20px; }
+}
+
+@media (max-width: 600px) {
+  .sk-form-row { grid-template-columns: 1fr; gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .sk-auth-title { font-size: 1.6rem; }
+}

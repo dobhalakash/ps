@@ -1,0 +1,31 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Notifications</h1>
+
+  @if (loading) {
+    <p class="th-text-muted">Loading...</p>
+  } @else if (notifications.length === 0) {
+    <div class="th-empty-state th-card">
+      <i class="fa-solid fa-bell-slash"></i>
+      <p>No notifications yet.</p>
+    </div>
+  } @else {
+    <div class="th-notif-list">
+      @for (n of notifications; track n.id) {
+        <div class="th-notif-item th-card" [class.th-notif-unread]="!n.read">
+          <div class="th-notif-icon">
+            @if (n.title?.includes('Order')) { <i class="fa-solid fa-box"></i> }
+            @else if (n.title?.includes('Payment')) { <i class="fa-solid fa-credit-card"></i> }
+            @else if (n.title?.includes('Return')) { <i class="fa-solid fa-rotate-left"></i> }
+            @else if (n.title?.includes('Cancel')) { <i class="fa-solid fa-ban"></i> }
+            @else { <i class="fa-solid fa-bell"></i> }
+          </div>
+          <div class="th-notif-body">
+            <strong>{{ n.title }}</strong>
+            <p>{{ n.message }}</p>
+            <span class="th-notif-time">{{ timeAgo(n.createdAt) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

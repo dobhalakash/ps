@@ -1,0 +1,41 @@
+/* Shared styles for address list, profile card, and admin nav live in styles.css */
+.th-link-btn {
+  background: none;
+  border: none;
+  color: var(--th-navy);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.th-link-danger {
+  color: var(--th-danger);
+}
+
+.th-verify-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  padding: 12px 16px;
+  border-radius: var(--th-radius);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+.th-verify-banner i { color: #ea580c; }
+.th-verify-banner a {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--th-blue);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.th-verify-banner a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .th-verify-banner { flex-wrap: wrap; }
+  .th-verify-banner a { margin-left: 0; }
+}

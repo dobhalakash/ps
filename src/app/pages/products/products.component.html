@@ -1,0 +1,159 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'shop.title' | t }}</h1>
+
+  <!-- Mobile filter/sort bar (Flipkart-style) -->
+  <div class="th-mobile-filterbar">
+    <button class="th-mobile-filterbar__btn" (click)="toggleFilters()">
+      <i class="fa-solid fa-sliders"></i> {{ 'shop.filters' | t }}
+    </button>
+    <span class="th-mobile-filterbar__count">{{ totalElements() }} products</span>
+  </div>
+
+  <div class="th-products-layout">
+    <!-- Filters sidebar -->
+    <div class="th-filters-overlay" [class.open]="filtersOpen()" (click)="toggleFilters()"></div>
+    <aside class="th-filters th-card" [class.open]="filtersOpen()">
+      <div class="th-filters__header">
+        <h6>{{ 'shop.filters' | t }}</h6>
+        <button class="th-filters__close" (click)="toggleFilters()" aria-label="Close filters">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="th-filter-group" [class.collapsed]="!expandedSections()['category']">
+        <button type="button" class="th-filter-group__toggle" (click)="toggleSection('category')">
+          <label>{{ 'shop.category' | t }}</label>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        @if (expandedSections()['category']) {
+          <select class="form-select" [(ngModel)]="filters.categoryId" (change)="applyFilters()">
+            <option [ngValue]="undefined">{{ 'shop.allCategories' | t }}</option>
+            @for (cat of categories(); track cat.id) {
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        }
+      </div>
+
+      <div class="th-filter-group" [class.collapsed]="!expandedSections()['brand']">
+        <button type="button" class="th-filter-group__toggle" (click)="toggleSection('brand')">
+          <label>{{ 'shop.brand' | t }}</label>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        @if (expandedSections()['brand']) {
+          <input type="text" class="form-control" placeholder="e.g. PS Sports, Nova Athletics"
+                 [(ngModel)]="filters.brand" (keyup.enter)="applyFilters()">
+        }
+      </div>
+
+      <div class="th-filter-group th-price-range" [class.collapsed]="!expandedSections()['price']">
+        <button type="button" class="th-filter-group__toggle" (click)="toggleSection('price')">
+          <label>{{ 'shop.priceRange' | t }}</label>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        @if (expandedSections()['price']) {
+          <div class="th-price-inputs">
+            <input type="number" class="form-control" placeholder="Min" [(ngModel)]="filters.minPrice">
+            <span>-</span>
+            <input type="number" class="form-control" placeholder="Max" [(ngModel)]="filters.maxPrice">
+          </div>
+        }
+      </div>
+
+      <div class="th-filter-group" [class.collapsed]="!expandedSections()['sort']">
+        <button type="button" class="th-filter-group__toggle" (click)="toggleSection('sort')">
+          <label>{{ 'shop.sortBy' | t }}</label>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        @if (expandedSections()['sort']) {
+          <select class="form-select" [(ngModel)]="filters.sortBy" (change)="applyFilters()">
+            <option value="createdAt">{{ 'shop.newest' | t }}</option>
+            <option value="price">{{ 'shop.price' | t }}</option>
+            <option value="name">{{ 'shop.name' | t }}</option>
+            <option value="averageRating">{{ 'shop.rating' | t }}</option>
+          </select>
+          <select class="form-select mt-2" [(ngModel)]="filters.sortDir" (change)="applyFilters()">
+            <option value="desc">{{ 'shop.desc' | t }}</option>
+            <option value="asc">{{ 'shop.asc' | t }}</option>
+          </select>
+        }
+      </div>
+
+      <div class="th-filter-actions">
+        <button class="btn-th-primary full-width" (click)="applyFilters()">{{ 'shop.applyFilters' | t }}</button>
+        <button class="btn-th-outline full-width mt-2" (click)="clearFilters()">{{ 'shop.clearAll' | t }}</button>
+      </div>
+    </aside>
+
+    <!-- Product grid -->
+    <div class="th-products-main">
+      <div class="th-results-bar">
+        <span class="th-text-muted">{{ totalElements() }} products found</span>
+      </div>
+
+      @if (loading()) {
+        <p class="th-text-muted">{{ 'shop.loading' | t }}</p>
+      } @else if (products().length === 0) {
+        <div class="th-empty-state th-card">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <p>{{ 'shop.noMatch' | t }}</p>
+          <button class="btn-th-outline" (click)="clearFilters()">{{ 'shop.clearFilters' | t }}</button>
+        </div>
+      } @else {
+        <div class="th-product-grid">
+          @for (product of products(); track product.id) {
+            <div class="th-card th-product-card">
+              <a [routerLink]="['/products', product.id]" class="th-product-image-link">
+                @if (product.trending) {
+                  <span class="th-badge-trending th-card-badge">{{ 'home.bestseller' | t }}</span>
+                }
+                <button class="th-wishlist-btn" (click)="$event.stopPropagation(); toggleWishlist(product)">
+                  <i class="fa-solid fa-heart" [class.active]="wishlistService.wishlistProductIds().has(product.id)"></i>
+                </button>
+                <img [src]="product.primaryImageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400'" [alt]="product.name">
+              </a>
+              <div class="th-product-info">
+                <div class="th-product-team th-text-muted">{{ product.brand }} &middot; {{ product.categoryName }}</div>
+                <a [routerLink]="['/products', product.id]" class="th-product-name">{{ product.name }}</a>
+                @if (product.averageRating > 0) {
+                  <div class="th-rating"><i class="fa-solid fa-star"></i> {{ product.averageRating | number:'1.1-1' }}</div>
+                }
+                <div class="th-product-price-row">
+                  @if (product.discountPercentage > 0) {
+                    <span class="th-price-strike">₹{{ product.price | number:'1.0-0' }}</span>
+                  }
+                  <span class="th-price">₹{{ product.finalPrice | number:'1.0-0' }}</span>
+                </div>
+                @if (product.stock > 0) {
+                  <span class="th-badge-stock">{{ 'shop.inStock' | t }}</span>
+                } @else {
+                  <span class="th-badge-stock th-out-of-stock">{{ 'shop.outOfStock' | t }}</span>
+                }
+                @if (authService.canShop()) {
+                  <button class="btn-th-primary th-add-cart-btn" [disabled]="product.stock === 0" (click)="addToCart(product)">
+                    <i class="fa-solid fa-cart-plus"></i> {{ 'common.addToCart' | t }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <div class="th-pagination">
+            <button class="btn-th-outline" (click)="goToPage((filters.page ?? 0) - 1)" [disabled]="(filters.page ?? 0) === 0">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            @for (p of pageNumbers; track p) {
+              <button class="th-page-btn" [class.active]="p === filters.page" (click)="goToPage(p)">{{ p + 1 }}</button>
+            }
+            <button class="btn-th-outline" (click)="goToPage((filters.page ?? 0) + 1)" [disabled]="(filters.page ?? 0) >= totalPages() - 1">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

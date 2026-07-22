@@ -1,0 +1,63 @@
+@if (visible()) {
+
+  <!-- Floating bubble -->
+  <button class="cb-fab" (click)="toggle()" aria-label="Customer support chat">
+    @if (open()) {
+      <i class="fa-solid fa-xmark"></i>
+    } @else {
+      <i class="fa-solid fa-headset"></i>
+      @if (unread()) { <span class="cb-fab__dot"></span> }
+    }
+  </button>
+
+  <!-- Chat panel -->
+  @if (open()) {
+    <div class="cb-panel" role="dialog" aria-label="PS Sports support chat">
+      <div class="cb-header">
+        <div class="cb-header__avatar"><i class="fa-solid fa-headset"></i></div>
+        <div class="cb-header__info">
+          <strong>PS Sports {{ i18n.lang() === 'hi' ? 'सहायता' : 'Support' }}</strong>
+          <span><span class="cb-online"></span> {{ i18n.lang() === 'hi' ? 'ऑनलाइन' : 'Online' }}</span>
+        </div>
+        <button class="cb-header__close" (click)="toggle()" aria-label="Close chat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="cb-messages">
+        @for (m of messages(); track $index) {
+          <div class="cb-msg" [class.cb-msg--user]="m.from === 'user'">
+            <div class="cb-msg__bubble">
+              {{ m.text }}
+              @if (m.link) {
+                <button class="cb-msg__link" (click)="goto(m.link.path)">
+                  {{ m.link.label }} <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              }
+            </div>
+          </div>
+        }
+        @if (typing()) {
+          <div class="cb-msg">
+            <div class="cb-msg__bubble cb-typing"><span></span><span></span><span></span></div>
+          </div>
+        }
+      </div>
+
+      <div class="cb-quick">
+        @for (q of quickReplies; track q.id) {
+          <button class="cb-quick__chip" (click)="pick(q)">{{ quickLabel(q) }}</button>
+        }
+      </div>
+
+      <div class="cb-input">
+        <input #chatInput type="text"
+               [placeholder]="i18n.lang() === 'hi' ? 'अपना सवाल लिखें...' : 'Type your question...'"
+               (keydown.enter)="send(chatInput)">
+        <button (click)="send(chatInput)" aria-label="Send">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  }
+}

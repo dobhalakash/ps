@@ -1,0 +1,91 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Business Dashboard</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-business-nav></app-business-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (profile()) {
+        <div class="th-card th-business-banner">
+          <div>
+            <strong>{{ profile()!.businessName }}</strong>
+            <span class="th-text-muted"> &middot; {{ profile()!.ownerName }}</span>
+          </div>
+          <span class="th-status-badge"
+                [ngClass]="{
+                  'th-status-delivered': profile()!.status === 'APPROVED',
+                  'th-status-pending': profile()!.status === 'PENDING',
+                  'th-status-cancelled': profile()!.status === 'REJECTED' || profile()!.status === 'SUSPENDED'
+                }">{{ profile()!.status }}</span>
+        </div>
+      }
+
+      @if (loading()) {
+        <p class="th-text-muted">Loading dashboard...</p>
+      } @else if (stats()) {
+        <div class="th-stat-grid">
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Products</span>
+            <span class="th-stat-value">{{ stats()!.totalProducts }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Orders</span>
+            <span class="th-stat-value">{{ stats()!.totalOrders }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Pending Orders</span>
+            <span class="th-stat-value">{{ stats()!.pendingOrders }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Revenue</span>
+            <span class="th-stat-value">₹{{ stats()!.totalRevenue | number:'1.0-0' }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Categories Used</span>
+            <span class="th-stat-value">{{ stats()!.totalCategoriesUsed }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Low Stock Items</span>
+            <span class="th-stat-value" [class.th-stat-warning]="stats()!.lowStockProducts > 0">{{ stats()!.lowStockProducts }}</span>
+          </div>
+        </div>
+
+        @if (stats()!.lowStockProducts > 0) {
+          <div class="th-card th-alert-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            You have {{ stats()!.lowStockProducts }} product(s) with low stock (5 or fewer units).
+            <a routerLink="/business/products">Manage Products</a>
+          </div>
+        }
+      }
+
+      <!-- Payment settings -->
+      <div class="th-card th-form-card th-payment-settings-card">
+        <h6>Payment Settings</h6>
+        <p class="th-text-muted th-payment-settings-intro">
+          Add your UPI ID to receive payments directly from customers. When a customer pays for an
+          order containing only your products, PS Sports generates a secure payment
+          link for this UPI ID. If left blank, payments are collected via the platform account.
+        </p>
+
+        <div class="th-form-group">
+          <label>Your UPI ID</label>
+          <input type="text" class="form-control" placeholder="e.g. yourbusiness@upi" [(ngModel)]="upiId">
+        </div>
+
+        @if (paymentError()) {
+          <p class="th-error-text">{{ paymentError() }}</p>
+        }
+        @if (paymentSaved()) {
+          <p class="th-success-text">Payment settings saved!</p>
+        }
+
+        <button class="btn-th-primary" [disabled]="savingPayment()" (click)="savePaymentSettings()">
+          @if (savingPayment()) { Saving... } @else { Save Payment Settings }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">News Management</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (!showForm()) {
+        <div class="th-content-header">
+          <span class="th-text-muted">{{ news().length }} article(s)</span>
+          <button class="btn-th-primary" (click)="startNew()">+ Add Article</button>
+        </div>
+
+        @if (loading()) {
+          <p class="th-text-muted">Loading news...</p>
+        } @else if (news().length === 0) {
+          <div class="th-empty-state th-card">
+            <i class="fa-regular fa-newspaper"></i>
+            <p>No news articles yet.</p>
+          </div>
+        } @else {
+          <div class="th-table-responsive">
+            <table class="th-data-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Publish Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of news(); track item.id) {
+                  <tr>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.publishDate | date:'mediumDate' }}</td>
+                    <td>
+                      <span class="th-status-badge" [ngClass]="item.active ? 'th-status-delivered' : 'th-status-cancelled'">
+                        {{ item.active ? 'Published' : 'Draft' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="th-table-actions">
+                        <button (click)="edit(item)" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        <button class="th-danger" (click)="delete(item)" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      } @else {
+        <div class="th-card th-form-card">
+          <h6>{{ editingId() ? 'Edit Article' : 'Add New Article' }}</h6>
+
+          <div class="th-form-group">
+            <label>Title</label>
+            <input type="text" class="form-control" [(ngModel)]="form.title">
+          </div>
+
+          <div class="th-form-group">
+            <label>Description</label>
+            <textarea class="form-control" rows="4" [(ngModel)]="form.description"></textarea>
+          </div>
+
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Category</label>
+              <select class="form-select" [(ngModel)]="form.category">
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </div>
+            <div class="th-form-group">
+              <label>Publish Date</label>
+              <input type="date" class="form-control" [(ngModel)]="form.publishDate">
+            </div>
+          </div>
+
+          <div class="th-form-group">
+            <label>Thumbnail Image URL</label>
+            <input type="text" class="form-control" placeholder="https://..." [(ngModel)]="form.thumbnailUrl">
+          </div>
+
+          <div class="th-form-group th-checkbox-group">
+            <label class="th-checkbox-label"><input type="checkbox" [(ngModel)]="form.active"> Published (visible to customers)</label>
+          </div>
+
+          @if (error()) {
+            <p class="th-error-text">{{ error() }}</p>
+          }
+
+          <div class="th-form-actions">
+            <button class="btn-th-primary" (click)="save()">{{ editingId() ? 'Update Article' : 'Publish Article' }}</button>
+            <button class="btn-th-outline" (click)="cancelForm()">Cancel</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

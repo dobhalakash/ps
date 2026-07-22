@@ -1,0 +1,101 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Business Messages</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      <div class="th-messages-layout">
+
+        <!-- Inbox list -->
+        <div class="th-card th-inbox" [class.th-inbox--hidden-mobile]="selectedBusinessId() !== null">
+          @if (loadingInbox()) {
+            <p class="th-text-muted th-inbox-loading">Loading...</p>
+          } @else if (threads().length === 0) {
+            <div class="th-chat-empty">
+              <i class="fa-regular fa-comments"></i>
+              <p>No support messages yet.</p>
+            </div>
+          } @else {
+            @for (thread of threads(); track thread.businessUserId) {
+              <button type="button" class="th-inbox-item" [class.active]="selectedBusinessId() === thread.businessUserId"
+                      (click)="openThread(thread)">
+                <div class="th-inbox-item__top">
+                  <strong>{{ thread.businessName }}</strong>
+                  @if (thread.unreadCount > 0) {
+                    <span class="th-inbox-badge">{{ thread.unreadCount }}</span>
+                  }
+                </div>
+                <p class="th-text-muted">{{ thread.lastSenderRole === 'ADMIN' ? 'You: ' : '' }}{{ thread.lastMessage }}</p>
+                <span class="th-inbox-item__time th-text-muted">{{ thread.lastMessageAt | date:'short' }}</span>
+              </button>
+            }
+          }
+        </div>
+
+        <!-- Thread panel -->
+        <div class="th-card th-chat-card" [class.th-chat-card--hidden-mobile]="selectedBusinessId() === null">
+          @if (selectedBusinessId() === null) {
+            <div class="th-chat-empty th-chat-empty--full">
+              <i class="fa-regular fa-comment-dots"></i>
+              <p>Select a conversation to view it here.</p>
+            </div>
+          } @else {
+            <div class="th-chat-header">
+              <button type="button" class="th-chat-back" (click)="closeThread()"><i class="fa-solid fa-arrow-left"></i></button>
+              <i class="fa-solid fa-store"></i>
+              <div>
+                <h6>{{ selectedBusinessName() }}</h6>
+              </div>
+            </div>
+
+            <div class="th-chat-messages">
+              @if (loadingThread()) {
+                <p class="th-text-muted">Loading conversation...</p>
+              } @else {
+                @for (msg of messages(); track msg.id) {
+                  <div class="th-chat-bubble" [class.th-chat-bubble--mine]="msg.senderRole === 'ADMIN'">
+                    <div class="th-chat-bubble__meta">
+                      <strong>{{ msg.senderRole === 'ADMIN' ? 'You' : selectedBusinessName() }}</strong>
+                      <span class="th-text-muted">{{ msg.createdAt | date:'short' }}</span>
+                    </div>
+                    @if (msg.message) { <p>{{ msg.message }}</p> }
+                    @if (msg.attachmentUrl) {
+                      <a [href]="msg.attachmentUrl" target="_blank" rel="noopener" class="th-chat-attachment">
+                        <i class="fa-solid fa-paperclip"></i> {{ msg.attachmentName || 'Attachment' }}
+                      </a>
+                    }
+                  </div>
+                }
+              }
+            </div>
+
+            @if (error()) { <p class="th-error-text">{{ error() }}</p> }
+
+            @if (pendingAttachmentName) {
+              <div class="th-chat-pending-attachment">
+                <i class="fa-solid fa-paperclip"></i> {{ pendingAttachmentName }}
+                <button type="button" (click)="removeAttachment()"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            }
+
+            <div class="th-chat-input-row">
+              <label class="th-chat-attach-btn" [class.disabled]="uploading()">
+                @if (uploading()) { <i class="fa-solid fa-circle-notch fa-spin"></i> } @else { <i class="fa-solid fa-paperclip"></i> }
+                <input type="file" hidden [disabled]="uploading()" (change)="onFileSelected($event)">
+              </label>
+              <input type="text" class="form-control" placeholder="Type your reply..."
+                     [(ngModel)]="messageText" (keyup.enter)="send()">
+              <button type="button" class="btn-th-primary" [disabled]="sending()" (click)="send()">
+                @if (sending()) { <i class="fa-solid fa-circle-notch fa-spin"></i> } @else { <i class="fa-solid fa-paper-plane"></i> }
+              </button>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

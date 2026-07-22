@@ -1,0 +1,45 @@
+{
+  "name": "trackhub-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:secure": "ng build --configuration production && node scripts/obfuscate.js",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "android:sync": "ng build --configuration production && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:build": "ng build --configuration production && npx cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~20.2.0",
+    "@angular/cdk": "~20.2.0",
+    "@angular/common": "~20.2.0",
+    "@angular/compiler": "~20.2.0",
+    "@angular/core": "~20.2.0",
+    "@angular/forms": "~20.2.0",
+    "@angular/material": "~20.2.0",
+    "@angular/platform-browser": "~20.2.0",
+    "@angular/platform-browser-dynamic": "~20.2.0",
+    "@angular/router": "~20.2.0",
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
+    "bootstrap": "^5.3.3",
+    "qrcode": "^1.5.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.6.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~20.2.0",
+    "@angular/cli": "~20.2.0",
+    "@angular/compiler-cli": "~20.2.0",
+    "@capacitor/cli": "^8.4.0",
+    "@types/jasmine": "~5.1.0",
+    "@types/qrcode": "^1.5.6",
+    "javascript-obfuscator": "^5.4.3",
+    "typescript": "~5.9.0"
+  }
+}

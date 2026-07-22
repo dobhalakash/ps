@@ -1,0 +1,210 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'co.title' | t }}</h1>
+
+  @if (!authService.isLoggedIn()) {
+    <div class="th-card th-guest-prompt">
+      <i class="fa-solid fa-user-lock"></i>
+      <h3>{{ 'co.almostThere' | t }}</h3>
+      <p class="th-text-muted">
+        Sign in or create a quick account to complete your order - your cart is saved and will be right here.
+      </p>
+      <div class="th-guest-prompt__actions">
+        <a [routerLink]="['/login']" [queryParams]="{ returnUrl: '/checkout' }" class="btn-th-primary">{{ 'nav.signIn' | t }}</a>
+        <a [routerLink]="['/register']" [queryParams]="{ returnUrl: '/checkout' }" class="btn-th-outline">{{ 'footer.createAccount' | t }}</a>
+      </div>
+    </div>
+  } @else {
+
+  @if (!authService.currentUser()?.emailVerified) {
+    <div class="th-verify-banner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>{{ 'co.verifyEmailNote' | t }}</span>
+      <a routerLink="/verify-account">{{ 'co.verifyNow' | t }}</a>
+    </div>
+  }
+
+  <div class="th-checkout-layout">
+    <div class="th-checkout-main">
+
+      <!-- Address -->
+      <div class="th-card th-checkout-section">
+        <h6>{{ 'co.shippingAddress' | t }}</h6>
+
+        @if (addresses().length > 0) {
+          <div class="th-address-list">
+            @for (addr of addresses(); track addr.id) {
+              <label class="th-address-option" [class.selected]="selectedAddressId() === addr.id">
+                <input type="radio" name="address" [checked]="selectedAddressId() === addr.id" (change)="selectAddress(addr.id)">
+                <div>
+                  <strong>{{ addr.fullName }}</strong> &middot; {{ addr.phone }}
+                  <p>{{ addr.addressLine1 }}, {{ addr.addressLine2 }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                  <span class="th-address-type">{{ addr.addressType }}</span>
+                </div>
+              </label>
+            }
+          </div>
+          <button class="th-link-btn" (click)="showAddressForm.set(!showAddressForm())">
+            {{ showAddressForm() ? 'Cancel' : '+ Add a new address' }}
+          </button>
+        }
+
+        @if (showAddressForm() || addresses().length === 0) {
+          <div class="th-new-address-form">
+            <div class="th-form-row">
+              <div class="th-form-group">
+                <label>{{ 'co.fullName' | t }}</label>
+                <input type="text" class="form-control" [(ngModel)]="newAddress.fullName">
+              </div>
+              <div class="th-form-group">
+                <label>{{ 'co.phone' | t }}</label>
+                <input type="tel" class="form-control" [(ngModel)]="newAddress.phone">
+              </div>
+            </div>
+            <div class="th-form-group">
+              <label>{{ 'co.addr1' | t }}</label>
+              <input type="text" class="form-control" [(ngModel)]="newAddress.addressLine1">
+            </div>
+            <div class="th-form-group">
+              <label>{{ 'co.addr2' | t }}</label>
+              <input type="text" class="form-control" [(ngModel)]="newAddress.addressLine2">
+            </div>
+            <div class="th-form-row">
+              <div class="th-form-group">
+                <label>{{ 'co.city' | t }}</label>
+                <input type="text" class="form-control" [(ngModel)]="newAddress.city">
+              </div>
+              <div class="th-form-group">
+                <label>{{ 'co.state' | t }}</label>
+                <select class="form-control" [(ngModel)]="newAddress.state">
+                  <option value="">-- Select State --</option>
+                  @for (st of indianStates; track st) { <option [value]="st">{{ st }}</option> }
+                </select>
+              </div>
+            </div>
+            <div class="th-form-row">
+              <div class="th-form-group">
+                <label>{{ 'co.pincode' | t }}</label>
+                <input type="text" class="form-control" [(ngModel)]="newAddress.pincode">
+              </div>
+              <div class="th-form-group">
+                <label>{{ 'co.addrType' | t }}</label>
+                <select class="form-select" [(ngModel)]="newAddress.addressType">
+                  <option value="HOME">{{ 'addr.home' | t }}</option>
+                  <option value="WORK">{{ 'addr.work' | t }}</option>
+                  <option value="OTHER">{{ 'addr.other' | t }}</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-th-outline" (click)="saveNewAddress()">{{ 'co.saveAddress' | t }}</button>
+          </div>
+        }
+      </div>
+
+      <!-- Payment method -->
+      <div class="th-card th-checkout-section">
+        <h6>{{ 'co.paymentMethod' | t }}</h6>
+        <div class="th-payment-options">
+          <label class="th-payment-option" [class.selected]="paymentMethod === 'COD'" [class.disabled]="!codAvailable">
+            <input type="radio" name="payment" value="COD" [(ngModel)]="paymentMethod" [disabled]="!codAvailable">
+            <i class="fa-solid fa-money-bill-wave"></i> Cash on Delivery
+          </label>
+          <label class="th-payment-option" [class.selected]="paymentMethod === 'RAZORPAY'">
+            <input type="radio" name="payment" value="RAZORPAY" [(ngModel)]="paymentMethod">
+            <i class="fa-solid fa-shield-halved"></i> Pay Online (UPI / Card / Net Banking)
+          </label>
+        </div>
+
+        @if (!codAvailable) {
+          <p class="th-text-muted th-mock-note">
+            <i class="fa-solid fa-circle-info"></i> Cash on Delivery isn't available for one or more items in your cart. Please pay online.
+          </p>
+        } @else if (paymentMethod === 'COD' && codAdvanceTotal > 0) {
+          <p class="th-cod-advance-note">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            This order requires an advance payment of ₹{{ codAdvanceTotal | number:'1.0-0' }} online (transport charge) before it ships.
+            The remaining amount will be collected in cash on delivery.
+          </p>
+        } @else if (paymentMethod !== 'COD') {
+          <p class="th-text-muted th-mock-note">
+            <i class="fa-solid fa-circle-info"></i> You'll be redirected to a secure payment screen on the next step.
+          </p>
+        }
+      </div>
+
+      <!-- Order items -->
+      <div class="th-card th-checkout-section">
+        <h6>{{ 'co.orderItems' | t }}</h6>
+        @for (item of cartService.cart().items; track item.id) {
+          @if (!item.savedForLater) {
+            <div class="th-checkout-item">
+              <img [src]="item.productImageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=100'" [alt]="item.productName">
+              <div class="th-checkout-item-info">
+                <div>{{ item.productName }}</div>
+                @if (item.size) { <span class="th-text-muted">Size: {{ item.size }} &middot; </span> }
+                <span class="th-text-muted">Qty: {{ item.quantity }}</span>
+              </div>
+              <div class="th-price">₹{{ item.lineTotal | number:'1.0-0' }}</div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="th-card th-checkout-summary">
+      <h6>{{ 'cart.orderSummary' | t }}</h6>
+
+      <div class="th-coupon-row">
+        @if (appliedCoupon()) {
+          <div class="th-applied-coupon">
+            <span><i class="fa-solid fa-tag"></i> {{ appliedCoupon()!.code }}</span>
+            <button class="th-link-btn th-link-danger" (click)="removeCoupon()">{{ 'cart.remove' | t }}</button>
+          </div>
+        } @else {
+          <div class="th-coupon-input">
+            <input type="text" class="form-control" placeholder="Coupon code"
+                   [value]="couponCode()" (input)="couponCode.set($any($event.target).value.toUpperCase())">
+            <button class="btn-th-outline" (click)="applyCoupon()">{{ 'co.apply' | t }}</button>
+          </div>
+          @if (couponError()) {
+            <p class="th-error-text">{{ couponError() }}</p>
+          }
+        }
+      </div>
+
+      <div class="th-summary-row">
+        <span>{{ 'co.subtotal' | t }}</span>
+        <span>₹{{ cartService.cart().subtotal | number:'1.0-0' }}</span>
+      </div>
+      @if (estimatedDiscount > 0) {
+        <div class="th-summary-row th-summary-discount">
+          <span>{{ 'co.discount' | t }}</span>
+          <span>-₹{{ estimatedDiscount | number:'1.0-0' }}</span>
+        </div>
+      }
+      <div class="th-summary-row">
+        <span>{{ 'co.tax' | t }}</span>
+        <span>₹{{ estimatedTax | number:'1.0-0' }}</span>
+      </div>
+      <div class="th-summary-row">
+        <span>{{ 'co.shipping' | t }}</span>
+        <span>{{ estimatedShipping === 0 ? 'Free' : '₹' + (estimatedShipping | number:'1.0-0') }}</span>
+      </div>
+      <div class="th-summary-row th-summary-total">
+        <span>{{ 'common.total' | t }}</span>
+        <span>₹{{ estimatedTotal | number:'1.0-0' }}</span>
+      </div>
+
+      @if (error()) {
+        <p class="th-error-text">{{ error() }}</p>
+      }
+
+      <button class="btn-th-primary full-width" [disabled]="placing()" (click)="placeOrder()">
+        @if (placing()) { Placing Order... } @else { Place Order }
+      </button>
+      <a routerLink="/cart" class="th-continue-shopping">{{ 'co.backToCart' | t }}</a>
+    </div>
+  </div>
+
+  }
+</div>

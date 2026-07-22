@@ -1,0 +1,32 @@
+@if (loading()) {
+  <div class="th-page-container">
+    <p class="th-text-muted">Loading article...</p>
+  </div>
+} @else if (!news()) {
+  <div class="th-page-container">
+    <div class="th-empty-state th-card">
+      <p>Article not found.</p>
+      <a routerLink="/news" class="btn-th-outline">Back to News</a>
+    </div>
+  </div>
+} @else {
+  <div class="th-page-container th-news-detail">
+    <div class="th-breadcrumb th-text-muted">
+      <a routerLink="/news">News</a> / {{ news()!.title }}
+    </div>
+
+    @if (news()!.category) {
+      <span class="th-news-category">{{ news()!.category }}</span>
+    }
+    <h1>{{ news()!.title }}</h1>
+    <p class="th-text-muted th-news-date">{{ news()!.publishDate | date:'fullDate' }}</p>
+
+    <img [src]="news()!.thumbnailUrl || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900'" [alt]="news()!.title" class="th-news-hero">
+
+    <div class="th-news-content">
+      <p>{{ news()!.description }}</p>
+    </div>
+
+    <a routerLink="/news" class="btn-th-outline mt-2">Back to News</a>
+  </div>
+}

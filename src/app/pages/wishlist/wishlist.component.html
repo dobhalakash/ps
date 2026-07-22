@@ -1,0 +1,38 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'wl.title' | t }}</h1>
+
+  @if (loading()) {
+    <p class="th-text-muted">{{ 'wl.loading' | t }}</p>
+  } @else if (products().length === 0) {
+    <div class="th-empty-state th-card">
+      <i class="fa-regular fa-heart"></i>
+      <p>{{ 'wl.empty' | t }}</p>
+      <a routerLink="/products" class="btn-th-primary">{{ 'wl.browse' | t }}</a>
+    </div>
+  } @else {
+    <div class="th-product-grid">
+      @for (product of products(); track product.id) {
+        <div class="th-card th-product-card">
+          <a [routerLink]="['/products', product.id]" class="th-product-image-link">
+            <img [src]="product.primaryImageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400'" [alt]="product.name">
+          </a>
+          <div class="th-product-info">
+            <div class="th-text-muted th-product-team">{{ product.brand }}</div>
+            <a [routerLink]="['/products', product.id]" class="th-product-name">{{ product.name }}</a>
+            <div class="th-price">₹{{ product.finalPrice | number:'1.0-0' }}</div>
+            <div class="th-wishlist-actions">
+              @if (authService.canShop()) {
+                <button class="btn-th-primary th-add-cart-btn" [disabled]="product.stock === 0" (click)="addToCart(product)">
+                  <i class="fa-solid fa-cart-plus"></i> {{ 'common.addToCart' | t }}
+                </button>
+              }
+              <button class="btn-th-outline th-remove-btn" (click)="remove(product)">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

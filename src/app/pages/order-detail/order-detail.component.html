@@ -1,0 +1,218 @@
+@if (loading()) {
+  <div class="th-page-container">
+    <p class="th-text-muted">Loading order...</p>
+  </div>
+} @else if (!order()) {
+  <div class="th-page-container">
+    <div class="th-empty-state th-card">
+      <p>Order not found.</p>
+      <a routerLink="/orders" class="btn-th-outline">Back to Orders</a>
+    </div>
+  </div>
+} @else {
+  <div class="th-page-container">
+    <div class="th-od-header">
+      <div>
+        <h1 class="th-section-title th-od-title">Order {{ order()!.orderNumber }}</h1>
+        <p class="th-text-muted">Placed on {{ order()!.createdAt | date:'medium' }}</p>
+      </div>
+      <div class="th-od-header-right">
+        <span class="th-status-badge" [ngClass]="statusClass(order()!.status)">{{ order()!.status }}</span>
+        @if (order()!.status === 'DELIVERED') {
+          <button class="btn-th-outline th-invoice-btn" [disabled]="downloadingInvoice()" (click)="downloadInvoice()">
+            @if (downloadingInvoice()) {
+              <i class="fa-solid fa-circle-notch fa-spin"></i> Preparing...
+            } @else {
+              <i class="fa-solid fa-file-invoice"></i> Download Invoice
+            }
+          </button>
+        }
+      </div>
+    </div>
+    @if (invoiceError()) {
+      <p class="th-error-text">{{ invoiceError() }}</p>
+    }
+
+    <!-- Status tracker -->
+    @if (order()!.status !== 'CANCELLED') {
+      <div class="th-card th-tracker">
+        @for (step of statusSteps; track step) {
+          <div class="th-tracker-step" [class.done]="isStepDone(step)">
+            <div class="th-tracker-dot"></div>
+            <div class="th-tracker-label">{{ step.replace('_', ' ') }}</div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="th-card th-cancelled-banner">
+        <i class="fa-solid fa-circle-xmark"></i> This order has been cancelled.
+      </div>
+    }
+
+    <!-- Tracking details -->
+    @if (order()!.shipment?.awbNumber) {
+      <div class="th-card th-od-tracking">
+        <h6><i class="fa-solid fa-truck-fast"></i> Tracking Details</h6>
+        <div class="th-od-tracking-row">
+          <div>
+            <span class="th-text-muted">Courier</span>
+            <strong>{{ order()!.shipment?.courierName }}</strong>
+          </div>
+          <div>
+            <span class="th-text-muted">AWB / Tracking No.</span>
+            <strong>{{ order()!.shipment?.awbNumber }}</strong>
+          </div>
+          <div>
+            <span class="th-text-muted">Status</span>
+            <span class="th-status-badge th-status-shipped">{{ order()!.shipment?.status?.replace('_', ' ') }}</span>
+          </div>
+        </div>
+        @if (order()!.shipment?.lastTrackingNote) {
+          <p class="th-text-muted th-od-tracking-note">{{ order()!.shipment?.lastTrackingNote }}</p>
+        }
+        @if (order()!.shipment?.trackingUrl) {
+          <a [href]="order()!.shipment?.trackingUrl" target="_blank" rel="noopener" class="btn-th-outline">
+            Track on Courier Site <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        }
+      </div>
+    }
+
+    <div class="th-od-layout">
+      <!-- Items -->
+      <div class="th-card th-od-section">
+        <h6>Items</h6>
+        @for (item of order()!.items; track item.id) {
+          <div class="th-od-item">
+            <img [src]="item.productImageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=100'" [alt]="item.productName">
+            <div class="th-od-item-info">
+              <div>{{ item.productName }}</div>
+              @if (item.size) { <span class="th-text-muted">Size: {{ item.size }} &middot; </span> }
+              <span class="th-text-muted">Qty: {{ item.quantity }} &times; ₹{{ item.unitPrice | number:'1.0-0' }}</span>
+            </div>
+            <div class="th-price">₹{{ item.totalPrice | number:'1.0-0' }}</div>
+          </div>
+        }
+      </div>
+
+      <!-- Summary & address -->
+      <div>
+        <div class="th-card th-od-section">
+          <h6>Order Summary</h6>
+          <div class="th-summary-row">
+            <span>Subtotal</span>
+            <span>₹{{ order()!.subtotal | number:'1.0-0' }}</span>
+          </div>
+          @if (order()!.discountAmount > 0) {
+            <div class="th-summary-row th-summary-discount">
+              <span>Discount</span>
+              <span>-₹{{ order()!.discountAmount | number:'1.0-0' }}</span>
+            </div>
+          }
+          <div class="th-summary-row">
+            <span>Tax</span>
+            <span>₹{{ order()!.taxAmount | number:'1.0-0' }}</span>
+          </div>
+          <div class="th-summary-row">
+            <span>Shipping</span>
+            <span>{{ order()!.shippingAmount === 0 ? 'Free' : '₹' + (order()!.shippingAmount | number:'1.0-0') }}</span>
+          </div>
+          <div class="th-summary-row th-summary-total">
+            <span>Total</span>
+            <span>₹{{ order()!.grandTotal | number:'1.0-0' }}</span>
+          </div>
+          <div class="th-payment-info">
+            <span class="th-text-muted">Payment Method:</span> {{ order()!.paymentMethod }}
+            <br>
+            <span class="th-text-muted">Payment Status:</span> {{ order()!.paymentStatus }}
+            @if (order()!.codDueAmount && order()!.codDueAmount! > 0) {
+              <br>
+              <span class="th-text-muted">Due on Delivery (Cash):</span>
+              <strong>₹{{ order()!.codDueAmount | number:'1.0-0' }}</strong>
+            }
+          </div>
+          @if (order()!.paymentMethod !== 'COD' && order()!.paymentStatus === 'PENDING') {
+            <a [routerLink]="['/orders', order()!.id, 'pay']" class="btn-th-primary full-width th-complete-payment-btn">
+              <i class="fa-solid fa-credit-card"></i> Complete Payment
+            </a>
+          }
+          @if (order()!.paymentMethod === 'COD' && order()!.codDueAmount && order()!.codDueAmount! > 0 && order()!.paymentStatus === 'PENDING') {
+            <a [routerLink]="['/orders', order()!.id, 'pay']" class="btn-th-primary full-width th-complete-payment-btn">
+              <i class="fa-solid fa-credit-card"></i> Pay Advance to Confirm Order
+            </a>
+          }
+
+          @if (order()!.canCancel && !showCancelForm()) {
+            <button type="button" class="btn-th-outline full-width th-order-action-btn" (click)="showCancelForm.set(true)">
+              <i class="fa-solid fa-ban"></i> Cancel Order
+            </button>
+          }
+          @if (order()!.canRequestReturn && !showReturnForm()) {
+            <button type="button" class="btn-th-outline full-width th-order-action-btn" (click)="showReturnForm.set(true)">
+              <i class="fa-solid fa-rotate-left"></i> Request Return
+            </button>
+          }
+
+          @if (showCancelForm()) {
+            <div class="th-order-action-form">
+              <label>Why are you cancelling?</label>
+              <textarea class="form-control" rows="2" [ngModel]="cancelReason()" (ngModelChange)="cancelReason.set($event)"
+                        placeholder="e.g. Ordered by mistake, found a better price..."></textarea>
+              @if (actionError()) { <p class="th-error-text">{{ actionError() }}</p> }
+              <div class="th-order-action-form__buttons">
+                <button type="button" class="btn-th-outline" (click)="showCancelForm.set(false)">Never Mind</button>
+                <button type="button" class="btn-th-primary" [disabled]="cancelBusy()" (click)="cancelOrder()">
+                  @if (cancelBusy()) { Cancelling... } @else { Confirm Cancellation }
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (showReturnForm()) {
+            <div class="th-order-action-form">
+              <label>Why would you like to return this order?</label>
+              <textarea class="form-control" rows="2" [ngModel]="returnReason()" (ngModelChange)="returnReason.set($event)"
+                        placeholder="e.g. Wrong size, item damaged, not as described..."></textarea>
+              @if (actionError()) { <p class="th-error-text">{{ actionError() }}</p> }
+              <div class="th-order-action-form__buttons">
+                <button type="button" class="btn-th-outline" (click)="showReturnForm.set(false)">Never Mind</button>
+                <button type="button" class="btn-th-primary" [disabled]="cancelBusy()" (click)="submitReturn()">
+                  @if (cancelBusy()) { Submitting... } @else { Submit Return Request }
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (order()!.status === 'RETURN_REQUESTED') {
+            <p class="th-order-status-note">
+              <i class="fa-solid fa-clock"></i> Your return request is being reviewed.
+              @if (order()!.returnReason) { <span class="th-text-muted">Reason: {{ order()!.returnReason }}</span> }
+            </p>
+          }
+          @if (order()!.status === 'RETURNED') {
+            <p class="th-order-status-note th-order-status-note--success">
+              <i class="fa-solid fa-circle-check"></i> Return approved and refunded.
+            </p>
+          }
+          @if (order()!.status === 'CANCELLED' && order()!.cancellationReason) {
+            <p class="th-order-status-note">
+              <i class="fa-solid fa-circle-info"></i> Cancelled: {{ order()!.cancellationReason }}
+            </p>
+          }
+        </div>
+
+        <div class="th-card th-od-section">
+          <h6>Shipping Address</h6>
+          <p class="th-od-address">
+            <strong>{{ order()!.address.fullName }}</strong><br>
+            {{ order()!.address.addressLine1 }}<br>
+            @if (order()!.address.addressLine2) { {{ order()!.address.addressLine2 }}<br> }
+            {{ order()!.address.city }}, {{ order()!.address.state }} - {{ order()!.address.pincode }}<br>
+            {{ order()!.address.country }}<br>
+            Phone: {{ order()!.address.phone }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

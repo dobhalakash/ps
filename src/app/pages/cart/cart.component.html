@@ -1,0 +1,103 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'cart.title' | t }}</h1>
+
+  @if (cartService.cart().items.length === 0) {
+    <div class="th-empty-state th-card">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <p>{{ 'cart.empty' | t }}</p>
+      <a routerLink="/products" class="btn-th-primary">{{ 'cart.startShopping' | t }}</a>
+    </div>
+  } @else {
+    <div class="th-cart-layout">
+      <div class="th-cart-items">
+        @for (item of activeItems(); track item.id) {
+          <div class="th-card th-cart-item">
+            <div class="th-cart-img-slider" tabindex="0" role="group"
+                 [attr.aria-label]="item.productName + ' images, use left and right arrow keys'"
+                 (keydown)="onImageKeydown(item, $event)">
+              <img [src]="currentImage(item)" [alt]="item.productName">
+              @if (hasMultipleImages(item)) {
+                <button type="button" class="th-cart-img-arrow th-cart-img-arrow--left"
+                        aria-label="Previous image" (click)="prevImage(item, $event)">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" class="th-cart-img-arrow th-cart-img-arrow--right"
+                        aria-label="Next image" (click)="nextImage(item, $event)">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <span class="th-cart-img-count">{{ imageIndex(item) + 1 }}/{{ imageCount(item) }}</span>
+              }
+            </div>
+            <div class="th-cart-item-info">
+              <div class="th-cart-item-name">{{ item.productName }}</div>
+              @if (item.size) {
+                <div class="th-text-muted th-cart-item-size">Size: {{ item.size }}</div>
+              }
+              <div class="th-price">₹{{ item.priceAtAdd | number:'1.0-0' }}</div>
+
+              @if (item.availableStock !== null && item.quantity > item.availableStock) {
+                <p class="th-out-of-stock-text">Only {{ item.availableStock }} left in stock</p>
+              }
+            </div>
+            <div class="th-cart-item-actions">
+              <div class="th-qty-control">
+                <button (click)="decrement(item)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="increment(item)">+</button>
+              </div>
+              <div class="th-cart-item-total th-price">₹{{ item.lineTotal | number:'1.0-0' }}</div>
+              <div class="th-cart-item-links">
+                <button class="th-link-btn" (click)="saveForLater(item)">{{ 'cart.saveForLater' | t }}</button>
+                <button class="th-link-btn th-link-danger" (click)="removeItem(item)">{{ 'cart.remove' | t }}</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (savedItems().length > 0) {
+          <h2 class="th-section-title th-saved-title">{{ 'cart.savedForLater' | t }}</h2>
+          @for (item of savedItems(); track item.id) {
+            <div class="th-card th-cart-item th-saved-item">
+              <div class="th-cart-img-slider" tabindex="0" role="group"
+                 [attr.aria-label]="item.productName + ' images, use left and right arrow keys'"
+                 (keydown)="onImageKeydown(item, $event)">
+              <img [src]="currentImage(item)" [alt]="item.productName">
+              @if (hasMultipleImages(item)) {
+                <button type="button" class="th-cart-img-arrow th-cart-img-arrow--left"
+                        aria-label="Previous image" (click)="prevImage(item, $event)">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" class="th-cart-img-arrow th-cart-img-arrow--right"
+                        aria-label="Next image" (click)="nextImage(item, $event)">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <span class="th-cart-img-count">{{ imageIndex(item) + 1 }}/{{ imageCount(item) }}</span>
+              }
+            </div>
+              <div class="th-cart-item-info">
+                <div class="th-cart-item-name">{{ item.productName }}</div>
+                <div class="th-price">₹{{ item.priceAtAdd | number:'1.0-0' }}</div>
+              </div>
+              <div class="th-cart-item-links">
+                <button class="th-link-btn" (click)="moveToCart(item)">{{ 'cart.moveToCart' | t }}</button>
+                <button class="th-link-btn th-link-danger" (click)="removeItem(item)">{{ 'cart.remove' | t }}</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Summary -->
+      <div class="th-card th-cart-summary">
+        <h6>{{ 'cart.orderSummary' | t }}</h6>
+        <div class="th-summary-row">
+          <span>Subtotal ({{ cartService.cart().totalItems }} items)</span>
+          <span>₹{{ cartService.cart().subtotal | number:'1.0-0' }}</span>
+        </div>
+        <p class="th-text-muted th-summary-note">{{ 'cart.taxNote' | t }}</p>
+        <button class="btn-th-primary full-width" (click)="proceedToCheckout()">{{ 'cart.proceed' | t }}</button>
+        <a routerLink="/products" class="th-continue-shopping">{{ 'cart.continueShopping' | t }}</a>
+      </div>
+    </div>
+  }
+</div>

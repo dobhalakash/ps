@@ -1,0 +1,332 @@
+.th-products-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 1.5rem;
+}
+
+.th-filters {
+  padding: 1.25rem;
+  align-self: start;
+  position: sticky;
+  top: 5rem;
+}
+
+.th-filters h6 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.th-filter-group {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--th-border);
+  padding-bottom: 0.75rem;
+}
+.th-filter-group:last-of-type { border-bottom: none; }
+
+.th-filter-group__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 0.3rem;
+}
+.th-filter-group__toggle label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+.th-filter-group__toggle i {
+  font-size: 11px;
+  color: var(--th-text-muted);
+  transition: transform .2s ease;
+}
+.th-filter-group.collapsed .th-filter-group__toggle i {
+  transform: rotate(-90deg);
+}
+.th-filter-group.collapsed { padding-bottom: 0.6rem; }
+
+.th-filter-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--th-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.th-price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.th-filter-actions {
+  margin-top: 1.5rem;
+}
+
+.th-results-bar {
+  margin-bottom: 1rem;
+}
+
+.th-empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.th-empty-state i {
+  font-size: 2.5rem;
+  color: var(--th-border);
+  margin-bottom: 1rem;
+}
+
+.th-empty-state p {
+  margin-bottom: 1rem;
+  color: var(--th-text-muted);
+}
+
+/* Reuse product card styles */
+.th-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.th-product-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.th-product-image-link {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: var(--th-bg);
+}
+
+.th-product-image-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.th-card-badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 1;
+}
+
+.th-wishlist-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.th-wishlist-btn i {
+  color: var(--th-text-muted);
+}
+
+.th-wishlist-btn i.active {
+  color: var(--th-orange);
+}
+
+.th-product-info {
+  padding: 0.9rem 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.th-product-team {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.th-product-name {
+  font-weight: 600;
+  color: var(--th-text);
+  display: block;
+  line-height: 1.3;
+}
+
+.th-rating {
+  font-size: 0.8rem;
+  color: var(--th-text-muted);
+}
+
+.th-rating i {
+  color: #f5a623;
+}
+
+.th-product-price-row {
+  margin: 0.2rem 0;
+}
+
+.th-product-price-row .th-price {
+  font-size: 1.1rem;
+}
+
+.th-badge-stock {
+  width: fit-content;
+}
+
+.th-out-of-stock {
+  background-color: rgba(224, 67, 43, 0.1);
+  color: var(--th-danger);
+}
+
+.th-add-cart-btn {
+  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.th-add-cart-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Pagination */
+.th-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 2rem;
+}
+
+.th-page-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--th-radius);
+  border: 1px solid var(--th-border);
+  background-color: var(--th-surface);
+  cursor: pointer;
+  font-family: var(--font-display);
+}
+
+.th-page-btn.active {
+  background-color: var(--th-navy);
+  color: #fff;
+  border-color: var(--th-navy);
+}
+
+@media (max-width: 900px) {
+  .th-products-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Mobile filter bar (Flipkart-style) ── */
+.th-mobile-filterbar { display: none; }
+
+.th-filters__header { display: none; }
+.th-filters__close { display: none; }
+.th-filters-overlay { display: none; }
+
+@media (max-width: 768px) {
+  .th-page-container { padding: 12px; }
+  .th-section-title { font-size: 1.2rem; margin-bottom: 8px; }
+
+  .th-product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .th-product-card .th-product-info { padding: 8px 10px 10px; }
+  .th-product-card .th-product-name { font-size: 12px; }
+
+  .th-mobile-filterbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--th-surface);
+    border: 1px solid var(--th-border);
+    border-radius: var(--th-radius);
+    padding: 7px 12px;
+    margin-bottom: 10px;
+    /* Intentionally NOT sticky: a hardcoded sticky offset here previously
+       caused this bar to overlap the product grid whenever the header
+       wrapped to extra lines on narrow screens. Scrolling away naturally
+       is more reliable than guessing the header's height in pixels. */
+  }
+  .th-mobile-filterbar__btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--th-blue);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--th-radius);
+    font-weight: 700;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    cursor: pointer;
+  }
+  .th-mobile-filterbar__count { font-size: 12px; color: var(--th-text-muted); }
+
+  .th-results-bar { display: none; }
+
+  .th-filters-overlay.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 600;
+  }
+
+  .th-filters {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 84%;
+    max-width: 320px;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 700;
+    overflow-y: auto;
+    border-radius: 0;
+    margin: 0;
+  }
+  .th-filters.open {
+    transform: translateX(0);
+  }
+  .th-filters__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--th-border);
+  }
+  .th-filters__header h6 { margin: 0; }
+  .th-filters__close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--th-text-muted);
+    display: flex;
+  }
+}

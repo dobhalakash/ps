@@ -1,0 +1,107 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">User Logs</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+
+      @if (summary(); as s) {
+        <div class="th-stat-grid">
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Visits</span>
+            <span class="th-stat-value">{{ s.totalVisits }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Visits (24h)</span>
+            <span class="th-stat-value">{{ s.visitsLast24h }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Logins (24h)</span>
+            <span class="th-stat-value">{{ s.loginsLast24h }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Failed Logins (24h)</span>
+            <span class="th-stat-value" [class.th-low-stock]="s.failedLoginsLast24h > 0">{{ s.failedLoginsLast24h }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Sign-ups (24h)</span>
+            <span class="th-stat-value">{{ s.registrationsLast24h }}</span>
+          </div>
+        </div>
+      }
+
+      <div class="th-content-header">
+        <div class="th-filter-chips-row" style="margin-bottom: 0;">
+          @for (f of eventFilters; track f.label) {
+            <button class="th-filter-chip" [class.active]="eventType() === f.value" (click)="setFilter(f.value)">{{ f.label }}</button>
+          }
+        </div>
+        <button class="btn-th-sm btn-th-outline" (click)="refresh()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+
+      @if (loading()) {
+        <p class="th-text-muted">Loading activity logs...</p>
+      } @else if (logs().length === 0) {
+        <div class="th-empty-state th-card">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <p>No activity recorded yet for this filter.</p>
+        </div>
+      } @else {
+        <div class="th-table-responsive">
+          <table class="th-data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>IP Address</th>
+                <th>Device</th>
+                <th>Page</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (log of logs(); track log.id) {
+                <tr>
+                  <td class="th-log-time">{{ log.createdAt | date:'dd MMM, hh:mm:ss a' }}</td>
+                  <td>
+                    <span class="th-status-badge th-status-badge--sm" [ngClass]="eventBadgeClass(log.eventType)">
+                      {{ eventLabel(log.eventType) }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (log.email) {
+                      {{ log.email }}
+                    } @else {
+                      <span class="th-text-muted">Anonymous visitor</span>
+                    }
+                  </td>
+                  <td>{{ log.role ? log.role.replace('_', ' ') : '-' }}</td>
+                  <td>{{ log.ipAddress || '-' }}</td>
+                  <td>{{ deviceHint(log.userAgent) }}</td>
+                  <td class="th-log-path">{{ log.path || '-' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="th-pagination">
+          <button class="btn-th-sm btn-th-outline" [disabled]="page() === 0" (click)="goToPage(page() - 1)">
+            <i class="fa-solid fa-chevron-left"></i> Prev
+          </button>
+          <span class="th-page-info">Page {{ page() + 1 }} of {{ totalPages() }} &middot; {{ totalElements() }} events</span>
+          <button class="btn-th-sm btn-th-outline" [disabled]="page() + 1 >= totalPages()" (click)="goToPage(page() + 1)">
+            Next <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

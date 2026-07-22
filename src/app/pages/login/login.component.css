@@ -1,0 +1,114 @@
+/* Page-specific overrides for the login page (shared auth styles live in styles.css) */
+.th-auth-header{
+  text-align:center;
+}
+
+.th-auth-logo{
+  width:90px;
+  height:auto;
+  margin-bottom:16px;
+align-self:center;
+  transition:transform .4s ease;
+}
+
+.th-auth-logo:hover{
+  transform:rotate(360deg);
+}
+
+.sk-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--th-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin: 20px 0;
+}
+.sk-auth-divider::before,
+.sk-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--th-border);
+}
+.sk-auth-divider span { padding: 0 14px; }
+
+.sk-social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sk-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  border-radius: var(--th-radius);
+  border: 1px solid var(--th-border);
+  background: #fff;
+  color: var(--th-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease;
+}
+.sk-social-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.sk-social-btn:disabled { opacity: .6; cursor: default; }
+.sk-social-btn--google i { color: #ea4335; font-size: 16px; }
+.sk-social-btn--facebook { background: #1877f2; color: #fff; border-color: #1877f2; }
+.sk-social-btn--apple { background: #000; color: #fff; border-color: #000; }
+.th-signup-options {
+  margin-top: 22px;
+}
+.th-signup-options__label {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--th-text-muted);
+  margin-bottom: 10px;
+}
+
+.th-signup-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border-radius: var(--th-radius);
+  border: 1px solid var(--th-border);
+  text-decoration: none;
+  color: var(--th-text);
+  margin-bottom: 10px;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.th-signup-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.th-signup-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.th-signup-card--customer .th-signup-card__icon { background: var(--th-blue); }
+.th-signup-card--customer:hover { border-color: var(--th-blue); }
+.th-signup-card--business .th-signup-card__icon { background: var(--th-navy); }
+.th-signup-card--business:hover { border-color: var(--th-navy); }
+
+.th-signup-card__text { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.th-signup-card__text strong { font-size: 13.5px; }
+.th-signup-card__text span { font-size: 12px; color: var(--th-text-muted); }
+
+.th-signup-card__arrow { font-size: 12px; color: var(--th-text-muted); flex-shrink: 0; transition: transform .15s ease; }
+.th-signup-card:hover .th-signup-card__arrow { transform: translateX(3px); color: var(--th-blue); }

@@ -1,0 +1,76 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Support Chat</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-business-nav></app-business-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      <div class="th-card th-chat-card">
+        <div class="th-chat-header">
+          <i class="fa-solid fa-headset"></i>
+          <div>
+            <h6>PS Sports Support</h6>
+            <p class="th-text-muted">Message our team about any issue - payments, orders, your account, anything.</p>
+          </div>
+        </div>
+
+        <div class="th-chat-messages">
+          @if (loading()) {
+            <p class="th-text-muted">Loading conversation...</p>
+          } @else if (messages().length === 0) {
+            <div class="th-chat-empty">
+              <i class="fa-regular fa-comments"></i>
+              <p>No messages yet. Send us a note below and we'll get back to you.</p>
+            </div>
+          } @else {
+            @for (msg of messages(); track msg.id) {
+              <div class="th-chat-bubble" [class.th-chat-bubble--mine]="msg.senderRole === 'BUSINESS'">
+                <div class="th-chat-bubble__meta">
+                  <strong>{{ msg.senderRole === 'BUSINESS' ? 'You' : 'PS Sports Support' }}</strong>
+                  <span class="th-text-muted">{{ msg.createdAt | date:'short' }}</span>
+                </div>
+                @if (msg.message) {
+                  <p>{{ msg.message }}</p>
+                }
+                @if (msg.attachmentUrl) {
+                  <a [href]="msg.attachmentUrl" target="_blank" rel="noopener" class="th-chat-attachment">
+                    <i class="fa-solid fa-paperclip"></i> {{ msg.attachmentName || 'Attachment' }}
+                  </a>
+                }
+              </div>
+            }
+          }
+        </div>
+
+        @if (error()) {
+          <p class="th-error-text">{{ error() }}</p>
+        }
+
+        @if (pendingAttachmentName) {
+          <div class="th-chat-pending-attachment">
+            <i class="fa-solid fa-paperclip"></i> {{ pendingAttachmentName }}
+            <button type="button" (click)="removeAttachment()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        }
+
+        <div class="th-chat-input-row">
+          <label class="th-chat-attach-btn" [class.disabled]="uploading()">
+            @if (uploading()) {
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+            } @else {
+              <i class="fa-solid fa-paperclip"></i>
+            }
+            <input type="file" hidden [disabled]="uploading()" (change)="onFileSelected($event)">
+          </label>
+          <input type="text" class="form-control" placeholder="Type your message..."
+                 [(ngModel)]="messageText" (keyup.enter)="send()">
+          <button type="button" class="btn-th-primary" [disabled]="sending()" (click)="send()">
+            @if (sending()) { <i class="fa-solid fa-circle-notch fa-spin"></i> } @else { <i class="fa-solid fa-paper-plane"></i> }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

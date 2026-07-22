@@ -1,0 +1,172 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'pr.myAccount' | t }}</h1>
+
+  @if (!authService.currentUser()?.emailVerified) {
+    <div class="th-verify-banner">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>{{ 'pr.emailNotVerified' | t }}</span>
+      <a routerLink="/verify-account">{{ 'co.verifyNow' | t }}</a>
+    </div>
+  }
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <nav class="th-admin-nav">
+        <a [class.active]="activeTab() === 'profile'" (click)="activeTab.set('profile')">
+          <i class="fa-regular fa-user"></i> {{ 'pr.tabProfile' | t }}
+        </a>
+        <a [class.active]="activeTab() === 'addresses'" (click)="activeTab.set('addresses')">
+          <i class="fa-solid fa-location-dot"></i> {{ 'pr.tabAddresses' | t }}
+        </a>
+        <a [class.active]="activeTab() === 'password'" (click)="activeTab.set('password')">
+          <i class="fa-solid fa-lock"></i> {{ 'pr.tabPassword' | t }}
+        </a>
+        <a routerLink="/orders">
+          <i class="fa-solid fa-box"></i> {{ 'ord.title' | t }}
+        </a>
+        <a class="th-admin-nav__logout" (click)="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i> {{ 'nav.logout' | t }}
+        </a>
+      </nav>
+    </aside>
+
+
+    <div class="th-admin-content">
+      @if (error()) {
+        <p class="th-error-text">{{ error() }}</p>
+      }
+
+      @if (activeTab() === 'profile') {
+        <div class="th-card th-profile-card">
+          <h6>{{ 'pr.profileInfo' | t }}</h6>
+          <div class="th-form-group">
+            <label>{{ 'pr.email' | t }}</label>
+            <input type="email" class="form-control" [value]="authService.currentUser()?.email" disabled>
+          </div>
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>{{ 'pr.firstName' | t }}</label>
+              <input type="text" class="form-control" [(ngModel)]="profileForm.firstName">
+            </div>
+            <div class="th-form-group">
+              <label>{{ 'pr.lastName' | t }}</label>
+              <input type="text" class="form-control" [(ngModel)]="profileForm.lastName">
+            </div>
+          </div>
+          <div class="th-form-group">
+            <label>{{ 'pr.mobile' | t }}</label>
+            <input type="tel" class="form-control" [(ngModel)]="profileForm.mobileNumber">
+          </div>
+          @if (profileSaved()) {
+            <p class="th-success-text">{{ 'pr.updated' | t }}</p>
+          }
+          <button class="btn-th-primary" (click)="saveProfile()">{{ 'pr.saveChanges' | t }}</button>
+        </div>
+      }
+
+      @if (activeTab() === 'addresses') {
+        <div class="th-card th-profile-card">
+          <h6>{{ 'pr.savedAddresses' | t }}</h6>
+          @if (addresses().length === 0) {
+            <p class="th-text-muted">{{ 'pr.noAddresses' | t }}</p>
+          }
+          <div class="th-address-list">
+            @for (addr of addresses(); track addr.id) {
+              <div class="th-address-option th-address-display">
+                <div>
+                  <strong>{{ addr.fullName }}</strong> &middot; {{ addr.phone }}
+                  @if (addr.default) { <span class="th-default-tag">{{ 'pr.default' | t }}</span> }
+                  <p>{{ addr.addressLine1 }}, {{ addr.addressLine2 }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                  <span class="th-address-type">{{ addr.addressType }}</span>
+                </div>
+                <button class="th-link-btn th-link-danger" (click)="deleteAddress(addr)">{{ 'cart.remove' | t }}</button>
+              </div>
+            }
+          </div>
+
+          @if (showAddressForm()) {
+            <div class="th-new-address-form">
+              <div class="th-form-row">
+                <div class="th-form-group">
+                  <label>{{ 'co.fullName' | t }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="newAddress.fullName">
+                </div>
+                <div class="th-form-group">
+                  <label>{{ 'co.phone' | t }}</label>
+                  <input type="tel" class="form-control" [(ngModel)]="newAddress.phone">
+                </div>
+              </div>
+              <div class="th-form-group">
+                <label>{{ 'co.addr1' | t }}</label>
+                <input type="text" class="form-control" [(ngModel)]="newAddress.addressLine1">
+              </div>
+              <div class="th-form-group">
+                <label>{{ 'co.addr2' | t }}</label>
+                <input type="text" class="form-control" [(ngModel)]="newAddress.addressLine2">
+              </div>
+              <div class="th-form-row">
+                <div class="th-form-group">
+                  <label>{{ 'co.city' | t }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="newAddress.city">
+                </div>
+                <div class="th-form-group">
+                  <label>{{ 'co.state' | t }}</label>
+                  <select class="form-control" [(ngModel)]="newAddress.state">
+                    <option value="">-- Select State --</option>
+                    @for (st of indianStates; track st) { <option [value]="st">{{ st }}</option> }
+                  </select>
+                </div>
+              </div>
+              <div class="th-form-row">
+                <div class="th-form-group">
+                  <label>{{ 'co.pincode' | t }}</label>
+                  <input type="text" class="form-control" [(ngModel)]="newAddress.pincode">
+                </div>
+                <div class="th-form-group">
+                  <label>{{ 'co.addrType' | t }}</label>
+                  <select class="form-select" [(ngModel)]="newAddress.addressType">
+                    <option value="HOME">{{ 'addr.home' | t }}</option>
+                    <option value="WORK">{{ 'addr.work' | t }}</option>
+                    <option value="OTHER">{{ 'addr.other' | t }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="th-form-group">
+                <label class="th-checkbox-label">
+                  <input type="checkbox" [(ngModel)]="newAddress.isDefault"> Set as default address
+                </label>
+              </div>
+              <button class="btn-th-primary" (click)="saveAddress()">{{ 'co.saveAddress' | t }}</button>
+            </div>
+          } @else {
+            <button class="btn-th-outline mt-2" (click)="showAddressForm.set(true)">{{ 'pr.addAddress' | t }}</button>
+          }
+        </div>
+      }
+
+      @if (activeTab() === 'password') {
+        <div class="th-card th-profile-card">
+          <h6>{{ 'pr.changePassword' | t }}</h6>
+          <div class="th-form-group">
+            <label>{{ 'pr.currentPassword' | t }}</label>
+            <input type="password" class="form-control" [(ngModel)]="passwordForm.currentPassword">
+          </div>
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>{{ 'pr.newPassword' | t }}</label>
+              <input type="password" class="form-control" [(ngModel)]="passwordForm.newPassword">
+            </div>
+            <div class="th-form-group">
+              <label>{{ 'pr.confirmPassword' | t }}</label>
+              <input type="password" class="form-control" [(ngModel)]="confirmNewPassword">
+            </div>
+          </div>
+          @if (passwordSaved()) {
+            <p class="th-success-text">{{ 'pr.passwordChanged' | t }}</p>
+          }
+          <button class="btn-th-primary" (click)="changePassword()">{{ 'pr.updatePassword' | t }}</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

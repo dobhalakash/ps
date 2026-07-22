@@ -1,0 +1,154 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Order Support</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      <p class="th-text-muted th-support-intro">
+        Look up any order by order number, customer email, or AWB / tracking number to see exactly where a
+        customer's package is.
+      </p>
+
+      <div class="th-support-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Order number, customer email, or AWB number..."
+               [(ngModel)]="query" (input)="onQueryInput()">
+        @if (searching()) {
+          <i class="fa-solid fa-circle-notch fa-spin th-support-spinner"></i>
+        }
+      </div>
+
+      @if (searched() && !searching()) {
+        @if (results().length === 0) {
+          <div class="th-empty-state th-card">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <p>No orders found for "{{ query }}"</p>
+          </div>
+        } @else {
+          <div class="th-table-responsive">
+            <table class="th-data-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Ordered From</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Order Status</th>
+                  <th>Payment</th>
+                  <th>Shipping</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (order of results(); track order.id) {
+                  <tr>
+                    <td>{{ order.orderNumber }}</td>
+                    <td>{{ order.address.fullName }}</td>
+                    <td>
+                      @if (order.customerCity) {
+                        <span class="th-location-chip">
+                          <i class="fa-solid fa-location-dot"></i>
+                          {{ order.customerCity }}{{ order.customerRegion ? ', ' + order.customerRegion : '' }}
+                        </span>
+                      } @else {
+                        <span class="th-text-muted">Unknown</span>
+                      }
+                    </td>
+                    <td>{{ order.createdAt | date:'mediumDate' }}</td>
+                    <td>₹{{ order.grandTotal | number:'1.0-0' }}</td>
+                    <td><span class="th-status-badge" [ngClass]="statusClass(order.status)">{{ order.status }}</span></td>
+                    <td>
+                      <span class="th-status-badge" [ngClass]="order.paymentStatus === 'SUCCESS' ? 'th-status-delivered' : 'th-status-pending'">
+                        {{ order.paymentMethod }} &middot; {{ order.paymentStatus }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (order.shipment?.awbNumber) {
+                        <span class="th-awb-chip" [title]="order.shipment?.courierName || ''">
+                          <i class="fa-solid fa-truck-fast"></i> {{ order.shipment?.awbNumber }}
+                        </span>
+                      }
+                      <button class="btn-th-outline th-shipping-btn" (click)="toggleShipping(order)">
+                        {{ expandedOrderId() === order.id ? 'Close' : (order.shipment?.awbNumber ? 'Manage' : 'Add Tracking') }}
+                      </button>
+                    </td>
+                  </tr>
+
+                  @if (expandedOrderId() === order.id) {
+                    <tr class="th-shipping-row">
+                      <td colspan="8">
+                        <div class="th-shipping-panel">
+
+                          @if (!isPaymentConfirmed(order)) {
+                            <p class="th-shipping-warning">
+                              <i class="fa-solid fa-triangle-exclamation"></i>
+                              Tracking can be added once payment is confirmed for this order.
+                            </p>
+                          } @else {
+
+                            @if (order.shipment?.awbNumber) {
+                              <div class="th-shipping-current">
+                                <div>
+                                  <strong>{{ order.shipment?.courierName }}</strong>
+                                  <span class="th-text-muted"> &middot; AWB {{ order.shipment?.awbNumber }}</span>
+                                  <span class="th-status-badge th-status-shipped">{{ order.shipment?.status }}</span>
+                                </div>
+                                @if (order.shipment?.lastTrackingNote) {
+                                  <p class="th-text-muted th-shipping-note">{{ order.shipment?.lastTrackingNote }}</p>
+                                }
+                                @if (order.shipment?.trackingUrl) {
+                                  <a [href]="order.shipment?.trackingUrl" target="_blank" rel="noopener">Track Package <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                }
+                                <button class="btn-th-outline" [disabled]="shipmentBusy() === order.id" (click)="refreshShipment(order)">
+                                  @if (shipmentBusy() === order.id) { Refreshing... } @else { <i class="fa-solid fa-rotate"></i> Refresh Status }
+                                </button>
+                              </div>
+                            } @else {
+                              <div class="th-shipping-options">
+                                <div class="th-shipping-option">
+                                  <h6><i class="fa-solid fa-bolt"></i> Auto-create via Shiprocket</h6>
+                                  <p class="th-text-muted">Automatically picks a courier and assigns an AWB number.</p>
+                                  <button class="btn-th-primary" [disabled]="shipmentBusy() === order.id" (click)="createShiprocketShipment(order)">
+                                    @if (shipmentBusy() === order.id) { Creating Shipment... } @else { Create Shipment }
+                                  </button>
+                                </div>
+
+                                <div class="th-shipping-divider">OR</div>
+
+                                <div class="th-shipping-option">
+                                  <h6><i class="fa-regular fa-pen-to-square"></i> Enter tracking manually</h6>
+                                  <div class="th-shipping-form">
+                                    <input type="text" class="form-control" placeholder="Courier name (e.g. Delhivery)"
+                                           [(ngModel)]="manualForms[order.id].courierName">
+                                    <input type="text" class="form-control" placeholder="AWB / tracking number"
+                                           [(ngModel)]="manualForms[order.id].awbNumber">
+                                    <input type="text" class="form-control" placeholder="Tracking URL (optional)"
+                                           [(ngModel)]="manualForms[order.id].trackingUrl">
+                                    <button class="btn-th-outline" [disabled]="shipmentBusy() === order.id" (click)="saveManualShipment(order)">
+                                      @if (shipmentBusy() === order.id) { Saving... } @else { Save Tracking Details }
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            }
+
+                            @if (shipmentError()[order.id]) {
+                              <p class="th-error-text">{{ shipmentError()[order.id] }}</p>
+                            }
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Platform News</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-business-nav></app-business-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      <div class="th-card th-info-banner">
+        <i class="fa-solid fa-circle-info"></i>
+        News and announcements are managed centrally by the PS Sports platform team. Here's what's currently published.
+      </div>
+
+      @if (loading()) {
+        <p class="th-text-muted">Loading news...</p>
+      } @else if (news().length === 0) {
+        <div class="th-empty-state th-card">
+          <i class="fa-regular fa-newspaper"></i>
+          <p>No published news items.</p>
+        </div>
+      } @else {
+        <div class="th-table-responsive">
+          <table class="th-data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Publish Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of news(); track item.id) {
+                <tr>
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.category }}</td>
+                  <td>{{ item.publishDate | date:'mediumDate' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

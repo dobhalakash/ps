@@ -1,0 +1,364 @@
+/* ══════════════════════════════════════════════
+   TRACKHUB HEADER — black/red/white sporty theme
+   ══════════════════════════════════════════════ */
+
+.sk-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--th-navy);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+
+.sk-header__top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 76px;
+}
+
+/* ── Logo ── */
+.sk-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  text-decoration: none;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.sk-logo__sk {
+  color: var(--th-blue);
+  font-size: 2rem;
+  line-height: 1;
+}
+.sk-logo__sports {
+  color: #fff;
+  font-size: 1.1rem;
+  letter-spacing: .18em;
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+/* ── Search ── */
+.sk-search {
+  flex: 1;
+  max-width: 640px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 999px;
+  overflow: hidden;
+  height: 44px;
+}
+
+.sk-search__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 18px;
+  font-size: 14px;
+  color: var(--th-text);
+  font-family: var(--font-body);
+}
+.sk-search__input::placeholder { color: var(--th-text-muted); }
+
+.sk-search__btn {
+  width: 46px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--th-text);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sk-search__btn:hover { color: var(--th-blue); }
+
+.sk-search__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.25);
+  overflow: hidden;
+  z-index: 50;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.sk-search__loading,
+.sk-search__empty {
+  padding: 18px;
+  font-size: 13px;
+  color: var(--th-text-muted);
+  text-align: center;
+}
+
+.sk-search__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: var(--th-text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--th-border);
+}
+.sk-search__item:hover { background: var(--th-bg); }
+.sk-search__item img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: var(--th-bg);
+}
+.sk-search__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sk-search__item-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sk-search__item-meta {
+  font-size: 12px;
+  color: var(--th-text-muted);
+}
+.sk-search__item-meta .dot { margin: 0 4px; }
+
+.sk-search__viewall {
+  width: 100%;
+  border: none;
+  background: var(--th-bg);
+  color: var(--th-blue);
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.sk-search__viewall:hover { background: #eee; }
+
+/* ── Right action icons ── */
+.sk-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sk-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #fff;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 12px;
+  position: relative;
+  border-radius: 8px;
+  transition: background .15s ease;
+}
+.sk-action:hover { background: rgba(255,255,255,.08); }
+.sk-action i { font-size: 19px; }
+.sk-action__label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+.sk-action__badge {
+  position: absolute;
+  top: 0;
+  right: 6px;
+  background: var(--th-blue);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+/* ── Mobile hamburger ── */
+.sk-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sk-burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.sk-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.sk-burger.open span:nth-child(2) { opacity: 0; }
+.sk-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Nav links row ── */
+.sk-navlinks {
+  background: #0c0f14;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sk-navlinks__inner ul {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.sk-navlinks__inner ul::-webkit-scrollbar { display: none; }
+
+.sk-navlinks__inner a {
+  display: block;
+  padding: 13px 14px;
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+.sk-navlinks__inner a:hover,
+.sk-navlinks__inner a.active {
+  color: #fff;
+  border-color: var(--th-blue);
+}
+.sk-navlinks__deals a { color: var(--th-blue); }
+.sk-navlinks__deals a:hover,
+.sk-navlinks__deals a.active { color: #ff4d6a; }
+
+/* ══════════════════════════════════════════════
+   MOBILE (Flipkart-style stacked header)
+   ══════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .sk-search { display: none; }
+  .sk-navlinks { display: none; }
+}
+
+@media (max-width: 768px) {
+  .sk-header__top {
+    height: 56px;
+    padding: 0 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .sk-burger { display: none; }             /* hides it on mobile only */
+
+  .sk-logo {
+    order: 1;
+    flex: 1;
+    justify-content:  flex-start;
+  }
+  .sk-logo__sk { font-size: 2rem; }
+  .sk-logo__sports { font-size: 1.5rem; }
+
+  .sk-actions { order: 3; gap: 0; }
+  .sk-action__label { display: none; }
+  .sk-action { padding: 6px 8px; }
+  .sk-action i { font-size: 19px; }
+  /* On mobile, Home/Shop/Cart/Wishlist/Sign-in are already available in the
+     bottom tab bar (app-mobile-tabbar), so hide the duplicates from the
+     header. Keep search, language toggle and notifications up top since
+     those aren't in the tab bar. */
+  .sk-action--wishlist,
+  .sk-action--logout,
+  .sk-action--account,
+  .sk-action--cart { display: none; }
+
+  .sk-search {
+    order: 4;
+    flex-basis: 100%;
+    display: flex;
+    height: 40px;
+    margin: 0 0 8px;
+  }
+}
+
+/* ── Language toggle (EN / हिंदी) ── */
+.sk-lang-toggle { background:none; border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:4px 10px; }
+.sk-lang-toggle__label { font-weight:700; }
+.sk-lang-toggle:hover { border-color:#fff; }
+@media (max-width:768px) {
+  .sk-lang-toggle { padding:3px 8px; }
+  .sk-lang-toggle .sk-action__label { display:inline; font-size:11px; }
+}
+
+/* ── Notification bell ── */
+.sk-action--notifications { position:relative; }
+.sk-action--notifications i { font-size:1.1rem; }
+.sk-notif-badge {
+  position:absolute; top:2px; right:-2px; min-width:17px; height:17px;
+  border-radius:50%; background:var(--th-blue); color:#fff; font-size:10px;
+  font-weight:700; display:flex; align-items:center; justify-content:center;
+  padding:0 4px; line-height:1; border:2px solid var(--th-navy);
+  animation: notif-pulse .6s ease-in-out;
+}
+@keyframes notif-pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
+
+/* ── PS Sports logo ── */
+.sk-logo { display:flex; align-items:center; gap:8px; }
+.sk-logo__img { height:42px; width:42px; object-fit:cover; border-radius:8px; }
+
+/* ══ Icon-only search: hidden until toggled ══ */
+.sk-search { display:none; }
+.sk-search--open {
+  display:block;
+  position:absolute;
+  left:0; right:0;
+  top:100%;
+  background:var(--th-navy);
+  padding:12px 16px;
+  z-index:1100;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+  animation: sk-search-drop .18s ease;
+}
+@keyframes sk-search-drop { from { opacity:0; transform:translateY(-6px);} to { opacity:1; transform:none;} }
+.sk-search--open .sk-search__input { width:100%; }
+.sk-search__dropdown { z-index:1200; }
+.sk-lang-globe i { font-size:1.05rem; }

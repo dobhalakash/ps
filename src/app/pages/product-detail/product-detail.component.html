@@ -1,0 +1,322 @@
+@if (loading()) {
+  <div class="th-page-container">
+    <p class="th-text-muted">{{ 'pd.loading' | t }}</p>
+  </div>
+} @else if (!product()) {
+  <div class="th-page-container">
+    <div class="th-empty-state th-card">
+      <p>{{ 'pd.notFound' | t }}</p>
+      <a routerLink="/products" class="btn-th-outline">{{ 'pd.backToShop' | t }}</a>
+    </div>
+  </div>
+} @else {
+  <div class="th-page-container">
+    <div class="th-breadcrumb th-text-muted">
+      <a routerLink="/products">{{ 'nav.shop' | t }}</a> / <a [routerLink]="['/products']" [queryParams]="{ categoryId: product()!.categoryId }">{{ product()!.categoryName }}</a> / {{ product()!.name }}
+    </div>
+
+    <div class="th-pd-layout">
+      <!-- Gallery -->
+      <div class="th-pd-gallery">
+        <div class="th-pd-main-image th-card" tabindex="0" (keydown)="onGalleryKeydown($event)">
+          @if ((product()!.images.length || 0) > 1) {
+            <button type="button" class="th-gallery-arrow th-gallery-arrow--left" (click)="prevGalleryImage()" aria-label="Previous image">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" class="th-gallery-arrow th-gallery-arrow--right" (click)="nextGalleryImage()" aria-label="Next image">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          }
+          @if (features.productVideos && selectedVideo()) {
+            <video [src]="selectedVideo()!" controls autoplay playsinline class="th-pd-video"></video>
+          } @else {
+            <img [src]="selectedImage()?.imageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=600'" [alt]="product()!.name">
+          }
+        </div>
+        @if (product()!.images.length > 1 || (product()!.videos && product()!.videos!.length > 0)) {
+          <div class="th-pd-thumbs">
+            @for (img of product()!.images; track img.id) {
+              <button class="th-pd-thumb" [class.active]="!selectedVideo() && selectedImage()?.id === img.id" (click)="selectImage(img)">
+                <img [src]="img.imageUrl" [alt]="product()!.name">
+              </button>
+            }
+            @for (vid of (features.productVideos ? (product()!.videos || []) : []); track $index) {
+              <button class="th-pd-thumb th-pd-thumb--video" [class.active]="selectedVideo() === vid" (click)="selectVideo(vid)">
+                <video [src]="vid" muted preload="metadata"></video>
+                <span class="th-pd-thumb__play"><i class="fa-solid fa-play"></i></span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Info -->
+      <div class="th-pd-info">
+        <div class="th-product-team th-text-muted">{{ product()!.brand }}</div>
+        <h1 class="th-pd-title">{{ product()!.name }}</h1>
+
+        @if (product()!.averageRating > 0) {
+          <div class="th-rating th-pd-rating">
+            <i class="fa-solid fa-star"></i> {{ product()!.averageRating | number:'1.1-1' }}
+            <span class="th-text-muted">({{ reviews().length }} reviews)</span>
+          </div>
+        }
+
+        <div class="th-pd-price-row">
+          @if (product()!.discountPercentage > 0) {
+            <span class="th-price-strike th-pd-strike">₹{{ product()!.price | number:'1.0-0' }}</span>
+            <span class="th-discount-badge">{{ product()!.discountPercentage }}% OFF</span>
+          }
+          <span class="th-price th-pd-price">₹{{ product()!.finalPrice | number:'1.0-0' }}</span>
+        </div>
+
+        <div class="th-pd-shipping-info">
+          @if (product()!.shippingCharge > 0) {
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Delivery: ₹{{ product()!.shippingCharge | number:'1.0-0' }}</span>
+          } @else {
+            <i class="fa-solid fa-truck-fast"></i>
+            <span class="th-free-shipping">{{ 'pd.freeDelivery' | t }}</span>
+          }
+        </div>
+
+        <!-- Pincode delivery checker (Standard & Premium editions) -->
+        @if (features.pincodeChecker) {
+        <div class="th-pincode-check">
+          <div class="th-pincode-check__row">
+            <i class="fa-solid fa-location-dot"></i>
+            <input type="text" maxlength="6" inputmode="numeric"
+                   [placeholder]="i18n.lang() === 'hi' ? 'डिलीवरी पिनकोड डालें' : 'Enter delivery pincode'"
+                   [(ngModel)]="pincodeInput" (keyup.enter)="checkPincode()">
+            <button type="button" (click)="checkPincode()" [disabled]="checkingPincode()">
+              @if (checkingPincode()) { <i class="fa-solid fa-circle-notch fa-spin"></i> }
+              @else { {{ i18n.lang() === 'hi' ? 'जाँचें' : 'Check' }} }
+            </button>
+          </div>
+          @if (pincodeResult(); as pr) {
+            @if (pr.available === true) {
+              <p class="th-pincode-check__ok">
+                <i class="fa-solid fa-circle-check"></i>
+                {{ i18n.lang() === 'hi' ? 'डिलीवरी उपलब्ध है' : 'Delivery available' }}
+                @if (pr.estimatedDays) { — {{ i18n.lang() === 'hi' ? 'लगभग' : 'est.' }} {{ pr.estimatedDays }} {{ i18n.lang() === 'hi' ? 'दिन' : 'days' }} }
+              </p>
+            } @else if (pr.available === false) {
+              <p class="th-pincode-check__no">
+                <i class="fa-solid fa-circle-xmark"></i>
+                {{ i18n.lang() === 'hi' ? 'इस पिनकोड पर डिलीवरी उपलब्ध नहीं है' : 'Delivery not available to this pincode' }}
+              </p>
+            } @else {
+              <p class="th-text-muted th-pincode-check__na">
+                {{ i18n.lang() === 'hi' ? 'अभी जाँच उपलब्ध नहीं — हम पूरे भारत में शिपिंग करते हैं (3–7 दिन)' : 'Checker unavailable right now — we ship across India (3–7 days)' }}
+              </p>
+            }
+          }
+        </div>
+        }
+
+        <p class="th-pd-description">{{ product()!.description }}</p>
+
+        <!-- Cricket bat specifications -->
+        @if (product()!.batWeight || product()!.bladeType || product()!.willowGrade) {
+          <div class="th-specs-table">
+            <h6 class="th-specs-title">Specifications</h6>
+            <table>
+              @if (product()!.willowGrade) { <tr><td>Willow Grade</td><td>{{ product()!.willowGrade }}</td></tr> }
+              @if (product()!.batWeight) { <tr><td>Weight</td><td>{{ product()!.batWeight }}</td></tr> }
+              @if (product()!.bladeType) { <tr><td>Blade Type</td><td>{{ product()!.bladeType }}</td></tr> }
+              @if (product()!.handleGrip) { <tr><td>Handle Grip</td><td>{{ product()!.handleGrip }}</td></tr> }
+              @if (product()!.sweetSpot) { <tr><td>Sweet Spot</td><td>{{ product()!.sweetSpot }}</td></tr> }
+            </table>
+          </div>
+        }
+
+        @if (product()!.variants.length > 0) {
+          <div class="th-pd-sizes">
+            <div class="th-pd-sizes__header">
+              <label>{{ 'pd.selectSize' | t }}</label>
+              @if (product()!.categorySizeGuide) {
+                <button type="button" class="th-size-guide-toggle" (click)="showSizeGuide.set(!showSizeGuide())">
+                  <i class="fa-solid fa-ruler"></i> Size Guide
+                </button>
+              }
+            </div>
+            @if (showSizeGuide() && product()!.categorySizeGuide) {
+              <div class="th-size-guide-panel">{{ product()!.categorySizeGuide }}</div>
+            }
+            <div class="th-size-options">
+              @for (variant of product()!.variants; track variant.id) {
+                <button class="th-size-chip" [class.active]="selectedSize() === variant.size"
+                        [disabled]="variant.stock === 0"
+                        (click)="selectSize(variant.size)">
+                  {{ variant.size.replace('_', ' ') }}
+                </button>
+              }
+            </div>
+            @if (selectedSize() && variantStock(selectedSize()!) === 0) {
+              <p class="th-out-of-stock-text">{{ 'pd.sizeOut' | t }}</p>
+            }
+          </div>
+        }
+
+        <div class="th-pd-quantity">
+          <label>{{ 'pd.quantity' | t }}</label>
+          <div class="th-qty-control">
+            <button (click)="changeQuantity(-1)">-</button>
+            <span>{{ quantity() }}</span>
+            <button (click)="changeQuantity(1)">+</button>
+          </div>
+        </div>
+
+        @if (authService.canShop()) {
+          <div class="th-pd-actions">
+            <button class="btn-th-primary th-pd-add-btn" [disabled]="product()!.stock === 0" (click)="addToCart()">
+              <i class="fa-solid fa-cart-plus"></i> {{ 'common.addToCart' | t }}
+            </button>
+            <button class="btn-th-outline th-pd-wishlist-btn" (click)="toggleWishlist()">
+              <i class="fa-solid fa-heart" [class.active]="wishlistService.wishlistProductIds().has(product()!.id)"></i>
+            </button>
+          </div>
+        } @else {
+          <div class="th-pd-view-only">
+            <i class="fa-solid fa-eye"></i> Viewing only - business and admin accounts cannot purchase products.
+          </div>
+        }
+
+        @if (addedMessage()) {
+          <p class="th-success-text"><i class="fa-solid fa-circle-check"></i> {{ 'pd.addedToCart' | t }}</p>
+        }
+
+        @if (product()!.stock === 0) {
+          <p class="th-out-of-stock-text">{{ 'pd.productOut' | t }}</p>
+
+          @if (notifySubscribed()) {
+            <p class="th-success-text"><i class="fa-solid fa-circle-check"></i> {{ 'pd.emailBackInStock' | t }}</p>
+          } @else {
+            <div class="th-notify-form">
+              <input type="email" class="form-control" placeholder="Your email address"
+                     [ngModel]="notifyEmail()" (ngModelChange)="notifyEmail.set($event)">
+              <button type="button" class="btn-th-outline" [disabled]="notifyBusy()" (click)="subscribeStockAlert()">
+                @if (notifyBusy()) { Subscribing... } @else { Notify Me }
+              </button>
+            </div>
+            @if (notifyError()) { <p class="th-error-text">{{ notifyError() }}</p> }
+          }
+        } @else if (product()!.stock <= 5) {
+          <p class="th-low-stock-text">Only {{ product()!.stock }} left in stock!</p>
+        }
+
+        <div class="th-pd-meta th-text-muted">
+          <span>SKU: {{ product()!.sku }}</span>
+          <span>Sold by: {{ product()!.businessName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <section class="th-section th-reviews-section">
+      <h2 class="th-section-title">{{ 'pd.reviews' | t }}</h2>
+
+      @if (authService.isLoggedIn()) {
+        <div class="th-card th-review-form">
+          <h6>{{ 'pd.writeReview' | t }}</h6>
+          <div class="th-rating-input">
+            @for (star of averageRatingStars; track star) {
+              <i class="fa-solid fa-star" [class.active]="star <= reviewForm.rating" (click)="reviewForm.rating = star"></i>
+            }
+          </div>
+          <textarea class="form-control" rows="3" placeholder="Share your thoughts about this product..."
+                    [(ngModel)]="reviewForm.comment"></textarea>
+          <div class="th-review-photo-row">
+            @if (reviewForm.imageUrl) {
+              <div class="th-image-chip">
+                <img [src]="resolveUploadUrl(reviewForm.imageUrl)" alt="Review photo">
+                <button type="button" (click)="removeReviewPhoto()"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            } @else {
+              <label class="th-review-photo-add">
+                <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onReviewPhotoSelected($event)" hidden>
+                @if (uploadingReviewPhoto()) {
+                  <i class="fa-solid fa-circle-notch fa-spin"></i>
+                } @else {
+                  <i class="fa-solid fa-camera"></i> {{ i18n.lang() === 'hi' ? 'फ़ोटो जोड़ें' : 'Add photo' }}
+                }
+              </label>
+            }
+          </div>
+          @if (reviewError) {
+            <p class="th-error-text">{{ reviewError }}</p>
+          }
+          @if (reviewSuccess) {
+            <p class="th-success-text">{{ 'pd.thanksReview' | t }}</p>
+          }
+          <button class="btn-th-primary mt-2" [disabled]="reviewSubmitting" (click)="submitReview()">
+            Submit Review
+          </button>
+        </div>
+      }
+
+      @if (reviews().length === 0) {
+        <p class="th-text-muted">{{ 'pd.noReviews' | t }}</p>
+      } @else {
+        <div class="th-review-list">
+          @for (review of reviews(); track review.id) {
+            <div class="th-card th-review-item">
+              <div class="th-review-header">
+                <strong>{{ review.userName }}</strong>
+                <div class="th-rating">
+                  @for (star of averageRatingStars; track star) {
+                    <i class="fa-solid fa-star" [class.active]="star <= review.rating"></i>
+                  }
+                </div>
+              </div>
+              @if (review.comment) {
+                <p>{{ review.comment }}</p>
+              }
+              @if (review.imageUrl) {
+                <img class="th-review-photo" [src]="resolveUploadUrl(review.imageUrl)" alt="Customer photo" loading="lazy">
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    @if (relatedProducts().length > 0) {
+      <section class="th-pd-related">
+        <h3>{{ 'pd.youMayLike' | t }}</h3>
+        <div class="th-product-grid">
+          @for (p of relatedProducts(); track p.id) {
+            <a [routerLink]="['/products', p.id]" class="th-card th-product-card">
+              <div class="th-product-image-link">
+                <img [src]="p.primaryImageUrl || 'assets/shopping.webp'" [alt]="p.name" loading="lazy">
+              </div>
+              <div class="th-product-info">
+                <span class="th-product-name">{{ p.name }}</span>
+                <span class="th-price">₹{{ p.finalPrice | number:'1.0-0' }}</span>
+              </div>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    @if (recentlyViewed().length > 0) {
+      <section class="th-pd-related">
+        <h3>{{ 'pd.recentlyViewed' | t }}</h3>
+        <div class="th-product-grid">
+          @for (p of recentlyViewed(); track p.id) {
+            <a [routerLink]="['/products', p.id]" class="th-card th-product-card">
+              <div class="th-product-image-link">
+                <img [src]="p.primaryImageUrl || 'assets/shopping.webp'" [alt]="p.name" loading="lazy">
+              </div>
+              <div class="th-product-info">
+                <span class="th-product-name">{{ p.name }}</span>
+                <span class="th-price">₹{{ p.finalPrice | number:'1.0-0' }}</span>
+              </div>
+            </a>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

@@ -1,0 +1,81 @@
+.th-contact-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.th-contact-form-card {
+  padding: 1.5rem;
+}
+
+.th-contact-form-card h6 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+.th-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.th-contact-info-card {
+  padding: 1.25rem;
+}
+
+.th-contact-info-card i {
+  color: var(--th-orange);
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.th-contact-info-card h6 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.th-contact-info-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.th-success-box {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.th-success-box i {
+  font-size: 2.5rem;
+  color: var(--th-green);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.th-success-box p {
+  color: var(--th-text-muted);
+}
+
+.th-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.th-faq-item {
+  padding: 1.1rem 1.25rem;
+}
+
+.th-faq-item h6 {
+  margin-bottom: 0.4rem;
+}
+
+@media (max-width: 900px) {
+  .th-contact-layout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,15 @@
+@if (visible()) {
+  <div class="sk-cookie-banner" role="dialog" aria-label="Cookie notice">
+    <div class="sk-cookie-banner__text">
+      <i class="fa-solid fa-cookie-bite"></i>
+      <span>
+        We use cookies and local cache to keep you signed in, remember your cart, and improve your
+        experience on PS Sports. By continuing to browse, you agree to this.
+      </span>
+    </div>
+    <div class="sk-cookie-banner__actions">
+      <button type="button" class="sk-cookie-btn sk-cookie-btn--decline" (click)="decline()">Decline</button>
+      <button type="button" class="sk-cookie-btn sk-cookie-btn--accept" (click)="accept()">Accept</button>
+    </div>
+  </div>
+}

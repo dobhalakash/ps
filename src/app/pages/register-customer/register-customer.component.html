@@ -1,0 +1,96 @@
+<div class="sk-auth-page">
+  <div class="sk-auth-panel">
+
+    <img src="assets/ps-logo.jpeg" alt="PS Sports" class="ps-auth-logo">
+    <h1 class="sk-auth-title">{{ 'rg.create' | t }} <span>{{ 'rg.your' | t }}</span> {{ 'rg.account' | t }}</h1>
+    <p class="sk-auth-subtitle">{{ 'rg.join' | t }}</p>
+
+    <form (ngSubmit)="submit()" #regForm="ngForm" class="sk-auth-form">
+      <div class="sk-form-row">
+        <div class="sk-input-group">
+          <i class="fa-regular fa-user"></i>
+          <input type="text" name="firstName" required [(ngModel)]="form.firstName" placeholder="First Name">
+        </div>
+        <div class="sk-input-group">
+          <i class="fa-regular fa-user"></i>
+          <input type="text" name="lastName" [(ngModel)]="form.lastName" placeholder="Last Name">
+        </div>
+      </div>
+
+      <div class="sk-input-group">
+        <i class="fa-regular fa-envelope"></i>
+        <input type="email" name="email" required [(ngModel)]="form.email" placeholder="Email Address">
+      </div>
+
+      <div class="sk-input-group">
+        <i class="fa-solid fa-phone"></i>
+        <input type="tel" name="mobileNumber" required pattern="[0-9]{10}"
+               [(ngModel)]="form.mobileNumber" placeholder="10-digit Mobile Number">
+      </div>
+
+      <div class="sk-input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input [type]="showPassword ? 'text' : 'password'" name="password" required minlength="8"
+               [(ngModel)]="form.password" (ngModelChange)="onPasswordInput()" placeholder="Password">
+        <button type="button" class="sk-input-eye" (click)="showPassword = !showPassword" tabindex="-1">
+          <i class="fa-regular" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+        </button>
+      </div>
+
+      <div class="sk-input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmPassword" required
+               [(ngModel)]="form.confirmPassword" placeholder="Confirm Password">
+        <button type="button" class="sk-input-eye" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+          <i class="fa-regular" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+        </button>
+      </div>
+
+      <div class="sk-password-rules">
+        <span class="sk-password-label">{{ 'rg.passwordMust' | t }}</span>
+        <div class="sk-password-rule" [class.met]="passwordChecklist.length">
+          <i class="fa-solid" [class.fa-circle-check]="passwordChecklist.length" [class.fa-circle]="!passwordChecklist.length"></i>
+          At least 8 characters
+        </div>
+        <div class="sk-password-rule" [class.met]="passwordChecklist.uppercase">
+          <i class="fa-solid" [class.fa-circle-check]="passwordChecklist.uppercase" [class.fa-circle]="!passwordChecklist.uppercase"></i>
+          One uppercase letter
+        </div>
+        <div class="sk-password-rule" [class.met]="passwordChecklist.numberOrSpecial">
+          <i class="fa-solid" [class.fa-circle-check]="passwordChecklist.numberOrSpecial" [class.fa-circle]="!passwordChecklist.numberOrSpecial"></i>
+          One number or special character
+        </div>
+      </div>
+
+      @if (error()) {
+        <p class="sk-error-text">{{ error() }}</p>
+      }
+
+      <button type="submit" class="sk-btn-primary" [disabled]="loading() || !regForm.valid">
+        @if (loading()) { CREATING ACCOUNT... } @else { SIGN UP }
+      </button>
+    </form>
+
+    <div class="sk-auth-divider"><span>{{ 'lg.or' | t }}</span></div>
+
+    <div class="sk-social-buttons">
+      <button type="button" class="sk-social-btn sk-social-btn--google" [disabled]="!!socialLoading()" (click)="signInWithGoogle()">
+        @if (socialLoading() === 'GOOGLE') {
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+        } @else {
+          <i class="fa-brands fa-google"></i>
+        }
+        Sign up with Google
+      </button>
+    </div>
+
+    <p class="sk-auth-footer">
+      Already have an account? <a routerLink="/login">{{ 'rg.signIn' | t }}</a>
+    </p>
+    <p class="sk-auth-footer sk-auth-footer--muted">
+      Want to sell on PS Sports? 
+    </p>
+  </div>
+
+  <div class="sk-auth-visual" aria-hidden="true"></div>
+</div>

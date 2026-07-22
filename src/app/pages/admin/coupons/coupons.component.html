@@ -1,0 +1,133 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Coupon Management</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (!showForm()) {
+        <div class="th-content-header">
+          <span class="th-text-muted">{{ coupons().length }} coupon(s)</span>
+          <button class="btn-th-primary" (click)="startNew()">+ Add Coupon</button>
+        </div>
+
+        @if (loading()) {
+          <p class="th-text-muted">Loading coupons...</p>
+        } @else if (coupons().length === 0) {
+          <div class="th-empty-state th-card">
+            <i class="fa-solid fa-tag"></i>
+            <p>No coupons created yet.</p>
+          </div>
+        } @else {
+          <div class="th-table-responsive">
+            <table class="th-data-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Discount</th>
+                  <th>Min Order</th>
+                  <th>Expiry</th>
+                  <th>Usage</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (coupon of coupons(); track coupon.id) {
+                  <tr>
+                    <td><strong>{{ coupon.code }}</strong></td>
+                    <td>
+                      @if (coupon.discountType === 'PERCENTAGE') {
+                        {{ coupon.discountValue }}%
+                        @if (coupon.maxDiscount) { (max ₹{{ coupon.maxDiscount | number:'1.0-0' }}) }
+                      } @else {
+                        ₹{{ coupon.discountValue | number:'1.0-0' }}
+                      }
+                    </td>
+                    <td>₹{{ coupon.minOrderValue | number:'1.0-0' }}</td>
+                    <td>{{ coupon.expiryDate ? (coupon.expiryDate | date:'mediumDate') : 'No expiry' }}</td>
+                    <td>{{ coupon.usedCount }}{{ coupon.usageLimit ? ' / ' + coupon.usageLimit : '' }}</td>
+                    <td>
+                      <span class="th-status-badge" [ngClass]="coupon.active ? 'th-status-delivered' : 'th-status-cancelled'">
+                        {{ coupon.active ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="th-table-actions">
+                        <button (click)="edit(coupon)" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        <button class="th-danger" (click)="delete(coupon)" title="Deactivate"><i class="fa-solid fa-ban"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      } @else {
+        <div class="th-card th-form-card">
+          <h6>{{ editingId() ? 'Edit Coupon' : 'Add New Coupon' }}</h6>
+
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Coupon Code</label>
+              <input type="text" class="form-control" placeholder="e.g. WELCOME10"
+                     [ngModel]="form.code" (ngModelChange)="form.code = $event.toUpperCase()">
+            </div>
+            <div class="th-form-group">
+              <label>Discount Type</label>
+              <select class="form-select" [(ngModel)]="form.discountType">
+                @for (type of discountTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Discount Value {{ form.discountType === 'PERCENTAGE' ? '(%)' : '(₹)' }}</label>
+              <input type="number" class="form-control" [(ngModel)]="form.discountValue">
+            </div>
+            <div class="th-form-group">
+              <label>Min Order Value (₹)</label>
+              <input type="number" class="form-control" [(ngModel)]="form.minOrderValue">
+            </div>
+          </div>
+
+          <div class="th-form-row">
+            @if (form.discountType === 'PERCENTAGE') {
+              <div class="th-form-group">
+                <label>Max Discount (₹, optional)</label>
+                <input type="number" class="form-control" [(ngModel)]="form.maxDiscount">
+              </div>
+            }
+            <div class="th-form-group">
+              <label>Usage Limit (optional)</label>
+              <input type="number" class="form-control" [(ngModel)]="form.usageLimit">
+            </div>
+            <div class="th-form-group">
+              <label>Expiry Date (optional)</label>
+              <input type="date" class="form-control" [(ngModel)]="form.expiryDate">
+            </div>
+          </div>
+
+          <div class="th-form-group th-checkbox-group">
+            <label class="th-checkbox-label"><input type="checkbox" [(ngModel)]="form.active"> Active</label>
+          </div>
+
+          @if (error()) {
+            <p class="th-error-text">{{ error() }}</p>
+          }
+
+          <div class="th-form-actions">
+            <button class="btn-th-primary" (click)="save()">{{ editingId() ? 'Update Coupon' : 'Create Coupon' }}</button>
+            <button class="btn-th-outline" (click)="cancelForm()">Cancel</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

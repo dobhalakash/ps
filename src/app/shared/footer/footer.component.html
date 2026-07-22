@@ -1,0 +1,210 @@
+
+<!-- ═════════ TRUST BAR ═════════ -->
+<div class="dn-footer-trust">
+  <div class="dn-footer-trust__inner">
+
+    <div class="dn-footer-trust-item">
+      <i class="fa-solid fa-lock"></i>
+      <div>
+        <strong>{{ 'footer.securePayments' | t }}</strong>
+        <span>{{ 'footer.secureDesc' | t }}</span>
+      </div>
+    </div>
+
+    <div class="dn-footer-trust-item">
+      <i class="fa-solid fa-truck-fast"></i>
+      <div>
+        <strong>{{ 'footer.fastDelivery' | t }}</strong>
+        <span>{{ 'footer.deliveryDesc' | t }}</span>
+      </div>
+    </div>
+
+    <div class="dn-footer-trust-item">
+      <i class="fa-solid fa-headset"></i>
+      <div>
+        <strong>{{ 'footer.support247' | t }}</strong>
+        <span>{{ 'footer.supportDesc' | t }}</span>
+      </div>
+    </div>
+
+    <div class="dn-footer-trust-item">
+      <i class="fa-solid fa-medal"></i>
+      <div>
+        <strong>{{ 'footer.premiumQuality' | t }}</strong>
+        <span>{{ 'footer.qualityDesc' | t }}</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═════════ MAIN FOOTER ═════════ -->
+<footer class="dn-footer">
+  <div class="dn-footer-inner">
+
+    <!-- Brand Column -->
+    <div class="dn-footer-brand">
+
+      <div class="dn-footer-logo">
+
+        <div class="dn-footer-logo__icon">
+          <i class="fa-solid fa-shirt"></i>
+        </div>
+
+        <div class="dn-footer-logo__text">
+          <span class="dn-footer-logo__name">
+            <img src="assets/ps-logo.jpeg" alt="PS Sports" style="height:32px;width:32px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:8px;"><strong>Paras</strong> Sports
+          </span>
+          <span class="dn-footer-logo__tagline">
+            Premium Jerseys. Built for Champions.
+          </span>
+        </div>
+
+      </div>
+
+      <p>
+        Paras Sports delivers premium-quality cricket bats,
+        gloves, pads and cricket equipment across India.</p>
+
+      <div class="dn-footer-social">
+        <a href="#" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a href="#" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a href="#" aria-label="X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+
+        <a href="#" aria-label="YouTube">
+          <i class="fa-brands fa-youtube"></i>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Quick Links -->
+    <div class="dn-footer-col">
+      <h6>{{ 'footer.shop' | t }}</h6>
+
+      <a routerLink="/products">All Jerseys</a>
+
+      <a
+        routerLink="/products"
+        [queryParams]="{ sortBy: 'trending' }">
+        Best Sellers
+      </a>
+
+      <a routerLink="/products">Cricket Jerseys</a>
+
+      <a routerLink="/products">Football Jerseys</a>
+
+      <a routerLink="/products">New Arrivals</a>
+
+      <a routerLink="/products">Special Offers</a>
+    </div>
+
+    <!-- Account -->
+    <div class="dn-footer-col">
+      <h6>{{ 'footer.myAccount' | t }}</h6>
+
+      <a routerLink="/login">{{ 'footer.signIn' | t }}</a>
+
+      <a routerLink="/register">{{ 'footer.createAccount' | t }}</a>
+
+      <a routerLink="/orders">{{ 'footer.trackOrder' | t }}</a>
+
+      <a routerLink="/wishlist">{{ 'footer.wishlist' | t }}</a>
+
+      <a routerLink="/register/business">
+        Become a Seller
+      </a>
+    </div>
+
+    <!-- Support -->
+    <div class="dn-footer-col">
+      <h6>{{ 'footer.customerSupport' | t }}</h6>
+
+      <a routerLink="/contact">{{ 'footer.contactUs' | t }}</a>
+
+      <a routerLink="/contact">Shipping Policy</a>
+
+      <a routerLink="/contact">Returns & Exchanges</a>
+
+      <a routerLink="/contact">Size Guide</a>
+
+      <a routerLink="/contact">FAQs</a>
+    </div>
+
+    <!-- Contact -->
+    <div class="dn-footer-col dn-footer-contact">
+
+      <h6>{{ 'footer.getInTouch' | t }}</h6>
+
+      <div class="dn-footer-contact-item">
+        <i class="fa-solid fa-phone"></i>
+        <span>+91 93700 22059</span>
+      </div>
+
+      <div class="dn-footer-contact-item">
+        <i class="fa-regular fa-envelope"></i>
+        <span>support&#64;parassport.com</span>
+      </div>
+
+      <div class="dn-footer-contact-item">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>Chhatrapati Sambhajinagar, Maharashtra, India</span>
+      </div>
+
+      <div class="dn-footer-badges">
+        <span class="dn-footer-badge">
+          <i class="fa-brands fa-google-pay"></i>
+        </span>
+
+        <span class="dn-footer-badge">
+          <i class="fa-brands fa-cc-visa"></i>
+        </span>
+
+        <span class="dn-footer-badge">
+          <i class="fa-brands fa-cc-mastercard"></i>
+        </span>
+
+        <span class="dn-footer-badge">
+          UPI
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="dn-footer-bottom">
+    <div class="dn-footer-bottom__inner">
+
+      <span>
+        &copy; {{ year }} Paras Sports.
+        All Rights Reserved.
+      </span>
+
+      <div class="dn-footer-bottom__links">
+        <a routerLink="/privacy-policy">
+          Privacy Policy
+        </a>
+
+        <a routerLink="/terms">
+          Terms & Conditions
+        </a>
+
+        <a routerLink="/refund-policy">
+          Refund Policy
+        </a>
+      </div>
+
+    </div>
+  </div>
+</footer>
+

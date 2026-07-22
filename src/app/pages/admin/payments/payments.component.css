@@ -1,0 +1,66 @@
+/* Summary cards */
+.th-pay-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.th-pay-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--th-radius-lg, 10px);
+  border: 1px solid var(--th-border);
+  background: var(--th-surface);
+}
+.th-pay-card i { font-size: 26px; flex-shrink: 0; }
+.th-pay-card span  { font-size: 11.5px; color: var(--th-text-muted); text-transform: uppercase; letter-spacing: .04em; display: block; margin-bottom: 2px; }
+.th-pay-card strong { font-size: 22px; font-family: var(--font-display); display: block; line-height: 1.1; }
+.th-pay-card em { font-style: normal; font-size: 12px; color: var(--th-text-muted); }
+
+.th-pay-card--success i { color: #22c55e; }
+.th-pay-card--pending i { color: #f59e0b; }
+.th-pay-card--failed  i { color: #ef4444; }
+
+/* Filter bar */
+.th-filter-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.th-filter-select { max-width: 220px; }
+
+/* Table enhancements */
+.th-pay-email { font-size: 11.5px; }
+.th-pay-cod   { font-size: 11.5px; margin-top: 2px; }
+
+/* Method badge */
+.th-method-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 4px; font-size: 11.5px; font-weight: 700;
+  background: var(--th-bg); color: var(--th-text);
+}
+.th-method-badge--cod       { background: rgba(234,179,8,.12);  color: #92400e; }
+.th-method-badge--razorpay  { background: rgba(59,130,246,.1);  color: #1d4ed8; }
+
+/* Expanded detail row */
+.th-pay-row--expanded > td { background: var(--th-bg); }
+.th-pay-detail-row > td { padding: 0; background: var(--th-bg); }
+.th-pay-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+.th-pay-detail-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.th-pay-detail-grid span { font-size: 11px; color: var(--th-text-muted); text-transform: uppercase; letter-spacing: .04em; }
+.th-pay-detail-grid strong { font-size: 13px; word-break: break-all; }
+
+@media (max-width: 700px) {
+  .th-pay-summary { grid-template-columns: 1fr 1fr; }
+  .th-pay-card strong { font-size: 18px; }
+}
+@media (max-width: 460px) {
+  .th-pay-summary { grid-template-columns: 1fr; }
+}

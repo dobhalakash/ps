@@ -1,0 +1,60 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Admin Dashboard</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (loading()) {
+        <p class="th-text-muted">Loading dashboard...</p>
+      } @else if (stats()) {
+        <div class="th-stat-grid">
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Users</span>
+            <span class="th-stat-value">{{ stats()!.totalUsers }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Customers</span>
+            <span class="th-stat-value">{{ stats()!.totalCustomers }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Business Accounts</span>
+            <span class="th-stat-value">{{ stats()!.totalBusinessAccounts }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Pending Approvals</span>
+            <span class="th-stat-value" [class.th-stat-warning]="stats()!.pendingBusinessApprovals > 0">
+              {{ stats()!.pendingBusinessApprovals }}
+            </span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Orders</span>
+            <span class="th-stat-value">{{ stats()!.totalOrders }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Products</span>
+            <span class="th-stat-value">{{ stats()!.totalProducts }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Categories</span>
+            <span class="th-stat-value">{{ stats()!.totalCategories }}</span>
+          </div>
+          <div class="th-card th-stat-card">
+            <span class="th-stat-label">Total Revenue</span>
+            <span class="th-stat-value">₹{{ stats()!.totalRevenue | number:'1.0-0' }}</span>
+          </div>
+        </div>
+
+        @if (stats()!.pendingBusinessApprovals > 0) {
+          <div class="th-card th-alert-card">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            {{ stats()!.pendingBusinessApprovals }} business account(s) awaiting approval.
+            <a routerLink="/admin/businesses">Review Now</a>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

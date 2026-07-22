@@ -1,0 +1,106 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Categories</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (!showForm()) {
+        <div class="th-content-header">
+          <span class="th-text-muted">{{ categories().length }} categories</span>
+          <button class="btn-th-primary" (click)="startNew()">+ Add Category</button>
+        </div>
+
+        @if (loading()) {
+          <p class="th-text-muted">Loading categories...</p>
+        } @else {
+          <div class="th-table-responsive">
+            <table class="th-data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (cat of categories(); track cat.id) {
+                  <tr>
+                    <td>{{ cat.name }}</td>
+                    <td>{{ cat.categoryType }}</td>
+                    <td>
+                      <span class="th-status-badge" [ngClass]="cat.active ? 'th-status-delivered' : 'th-status-cancelled'">
+                        {{ cat.active ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="th-table-actions">
+                        <button (click)="edit(cat)" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        @if (cat.active) {
+                          <button class="th-danger" (click)="toggleActive(cat)" title="Deactivate"><i class="fa-solid fa-ban"></i></button>
+                        } @else {
+                          <button (click)="toggleActive(cat)" title="Activate"><i class="fa-solid fa-check"></i></button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      } @else {
+        <div class="th-card th-form-card">
+          <h6>{{ editingId() ? 'Edit Category' : 'Add New Category' }}</h6>
+
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" [(ngModel)]="form.name">
+            </div>
+            <div class="th-form-group">
+              <label>Category Type</label>
+              <select class="form-select" [(ngModel)]="form.categoryType">
+                @for (cat of categoryTypes; track cat) {
+                  <option [value]="cat">{{ cat.replace('_', ' ') }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="th-form-group">
+            <label>Description</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="form.description"></textarea>
+          </div>
+
+          <div class="th-form-group">
+            <label>Image URL</label>
+            <input type="text" class="form-control" placeholder="https://..." [(ngModel)]="form.imageUrl">
+          </div>
+
+          <div class="th-form-group">
+            <label>Size Guide (shown on product pages in this category)</label>
+            <textarea class="form-control" rows="4" [(ngModel)]="form.sizeGuide"
+                      placeholder="e.g. S: Chest 36-38in, M: 38-40in, L: 40-42in, XL: 42-44in"></textarea>
+          </div>
+
+          <div class="th-form-group th-checkbox-group">
+            <label class="th-checkbox-label"><input type="checkbox" [(ngModel)]="form.active"> Active</label>
+          </div>
+
+          @if (error()) {
+            <p class="th-error-text">{{ error() }}</p>
+          }
+
+          <div class="th-form-actions">
+            <button class="btn-th-primary" (click)="save()">{{ editingId() ? 'Update Category' : 'Create Category' }}</button>
+            <button class="btn-th-outline" (click)="cancelForm()">Cancel</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

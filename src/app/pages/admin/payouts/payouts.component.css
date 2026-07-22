@@ -1,0 +1,280 @@
+/* ── Filter bar ────────────────────────────────────────────────────── */
+.th-filter-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.th-filter-select { max-width: 200px; }
+
+.th-proof-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--th-blue); }
+.th-proof-link:hover { text-decoration: underline; }
+
+.th-pagination { display: flex; align-items: center; gap: 12px; justify-content: center; padding: 14px; }
+
+/* ── Modal overlay ─────────────────────────────────────────────────── */
+.th-payout-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+  overflow-y: auto;
+}
+
+.th-payout-detail {
+  background: var(--th-card, #fff);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 680px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  margin: auto 0;
+}
+
+/* ── Header ────────────────────────────────────────────────────────── */
+.th-payout-detail__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 2px solid var(--th-border, #e2e8f0);
+  background: var(--th-bg, #f8fafc);
+  border-radius: 16px 16px 0 0;
+}
+.th-payout-detail__header h3 {
+  font-family: var(--font-display, 'Arial');
+  text-transform: uppercase;
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: .06em;
+  color: var(--th-text-muted, #64748b);
+}
+.th-payout-detail__close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--th-text-muted, #64748b);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.th-payout-detail__close:hover { background: var(--th-border, #e2e8f0); }
+
+/* ── Body ──────────────────────────────────────────────────────────── */
+.th-payout-detail__body {
+  padding: 24px;
+}
+
+/* ── Section titles ────────────────────────────────────────────────── */
+.th-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--th-text-muted, #64748b);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.th-section-label i { font-size: 13px; }
+.th-section-divider {
+  height: 1px;
+  background: var(--th-border, #e2e8f0);
+  margin: 20px 0;
+}
+
+/* ── Banking details ───────────────────────────────────────────────── */
+.th-banking-block {
+  background: var(--th-bg, #f8fafc);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 0;
+  border: 1px solid var(--th-border, #e2e8f0);
+}
+.th-banking-block h5 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--th-text-muted, #64748b);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.th-banking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 24px;
+}
+.th-banking-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.th-banking-grid span {
+  color: var(--th-text-muted, #64748b);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.th-banking-grid strong {
+  font-size: 13.5px;
+  color: var(--th-text, #1e293b);
+  word-break: break-all;
+}
+
+/* ── Amount rows ───────────────────────────────────────────────────── */
+.th-amounts-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 0;
+}
+.th-amount-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--th-border, #e2e8f0);
+}
+.th-amount-card span {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--th-text-muted, #64748b);
+}
+.th-amount-card strong {
+  font-size: 18px;
+  font-family: var(--font-display, 'Arial');
+}
+.th-amount-card--total { background: var(--th-bg, #f8fafc); }
+.th-amount-card--commission strong { color: var(--th-text-muted, #64748b); }
+.th-amount-card--owed strong { color: #16a34a; }
+
+/* ── Detail info rows ──────────────────────────────────────────────── */
+.th-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+.th-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+}
+.th-info-item span {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--th-text-muted, #64748b);
+}
+.th-info-item strong {
+  word-break: break-all;
+}
+.th-info-item--dispute {
+  grid-column: 1 / -1;
+  background: rgba(239,68,68,.06);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid #ef4444;
+}
+
+.th-green { color: #16a34a; }
+
+/* ── Update payout button ──────────────────────────────────────────── */
+.th-update-btn {
+  margin-top: 0;
+  font-size: 13px;
+  width: 100%;
+  padding: 11px;
+  border-radius: 8px;
+}
+
+/* ── Update form ───────────────────────────────────────────────────── */
+.th-update-form {
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--th-bg, #f8fafc);
+  border-radius: 10px;
+  border: 1px solid var(--th-border, #e2e8f0);
+}
+.th-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.th-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 2px dashed var(--th-border, #e2e8f0);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--th-text-muted, #64748b);
+  transition: border-color .15s, color .15s;
+}
+.th-upload-label:hover { border-color: var(--th-blue, #2563eb); color: var(--th-blue, #2563eb); }
+.th-upload-label.disabled { opacity: .5; cursor: default; }
+
+.th-proof-attached {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--th-blue, #2563eb);
+  font-weight: 600;
+}
+.th-proof-attached button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--th-text-muted);
+  font-size: 14px;
+}
+
+/* ── Audit trail ───────────────────────────────────────────────────── */
+.th-detail-history-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--th-text-muted, #64748b);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.th-history-list { display: flex; flex-direction: column; gap: 10px; }
+.th-history-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12.5px;
+}
+.th-history-item__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--th-blue, #2563eb);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.th-history-note { color: var(--th-text-muted); margin: 3px 0 0; font-size: 12px; }
+
+@media (max-width: 600px) {
+  .th-form-row { grid-template-columns: 1fr; }
+  .th-banking-grid { grid-template-columns: 1fr; }
+  .th-amounts-block { grid-template-columns: 1fr; }
+  .th-info-grid { grid-template-columns: 1fr; }
+  .th-payout-detail { max-width: 100%; }
+}

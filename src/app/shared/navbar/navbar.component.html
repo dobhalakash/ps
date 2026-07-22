@@ -1,0 +1,137 @@
+<header class="sk-header" [class.scrolled]="scrolled()">
+  <div class="sk-header__top dn-container">
+
+    <!-- Mobile hamburger -->
+    <button class="sk-burger" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Logo -->
+    <a routerLink="/" class="sk-logo" (click)="closeMenu()">
+      <img src="assets/ps-logo.jpeg" alt="PS Sports" class="sk-logo__img">
+      
+    </a>
+
+    <!-- Search — hidden on login/register/verify pages -->
+    @if (showSearch()) {
+    <div class="sk-search" [class.sk-search--open]="searchOpen()">
+      <input
+        type="text"
+        class="sk-search__input"
+        [placeholder]="i18n.t('nav.searchPlaceholder')"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput()"
+        (focus)="showSuggestions.set(true)"
+        (keydown.enter)="goSearch()"
+        aria-label="Search products"
+      />
+      <button class="sk-search__btn" (click)="goSearch()" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+
+      @if (showSuggestions() && searchQuery.trim().length >= 2) {
+        <div class="sk-search__dropdown">
+          @if (searching()) {
+            <div class="sk-search__loading"><i class="fa-solid fa-circle-notch fa-spin"></i> {{ 'nav.searching' | t }}</div>
+          } @else if (suggestions().length === 0) {
+            <div class="sk-search__empty">{{ 'nav.noProductsFound' | t }} "{{ searchQuery }}"</div>
+          } @else {
+            @for (p of suggestions(); track p.id) {
+              <a class="sk-search__item" (click)="selectSuggestion(p)">
+                <img [src]="p.primaryImageUrl || 'assets/shopping.webp'" [alt]="p.name">
+                <div class="sk-search__item-info">
+                  <span class="sk-search__item-name">{{ p.name }}</span>
+                  <span class="sk-search__item-meta">{{ p.brand }} <span class="dot">&middot;</span> ₹{{ p.finalPrice | number:'1.0-0' }}</span>
+                </div>
+              </a>
+            }
+            <button class="sk-search__viewall" (click)="goSearch()">
+              {{ 'nav.viewAllResults' | t }} "{{ searchQuery }}" <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          }
+        </div>
+      }
+    </div>
+    }
+
+    <!-- Right icons -->
+    <div class="sk-actions">
+      <!-- Search toggle (icon only) -->
+      @if (showSearch()) {
+        <button class="sk-action sk-search-toggle" (click)="toggleSearch()" aria-label="Search"
+                [title]="searchOpen() ? 'Close search' : 'Search products'">
+          @if (searchOpen()) { <i class="fa-solid fa-xmark"></i> } @else { <i class="fa-solid fa-magnifying-glass"></i> }
+        </button>
+      }
+
+      <!-- EN / Hindi language switch (Premium edition) -->
+      @if (features.hindi) {
+      <button class="sk-action sk-lang-toggle" (click)="i18n.toggle()"
+              [title]="i18n.lang() === 'en' ? 'हिंदी में देखें' : 'Switch to English'"
+              aria-label="Change language">
+        <span class="sk-lang-globe"></span>
+        <span class="sk-action__label sk-lang-toggle__label">
+          @if (i18n.lang() === 'en') { हिं } @else { EN }
+        </span>
+      </button>
+      }
+
+      @if (authService.isLoggedIn() && authService.canShop()) {
+        <a routerLink="/wishlist" class="sk-action sk-action--wishlist" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="sk-action__label">{{ 'nav.wishlist' | t }}</span>
+        </a>
+      }
+
+      <!-- Notification bell -->
+      @if (authService.isLoggedIn()) {
+        <a routerLink="/notifications" class="sk-action sk-action--notifications" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          @if (notificationService.unreadCount() > 0) {
+            <span class="sk-action__badge sk-notif-badge">{{ notificationService.unreadCount() }}</span>
+          }
+        </a>
+      }
+
+      <a [routerLink]="authService.isLoggedIn() ? dashboardLink : '/login'" class="sk-action sk-action--account" title="Account">
+        <i class="fa-regular fa-user"></i>
+        <span class="sk-action__label">
+          @if (authService.isLoggedIn()) { {{ 'nav.account' | t }} } @else { {{ 'nav.signIn' | t }} }
+        </span>
+      </a>
+
+      @if (authService.canShop()) {
+        <a routerLink="/cart" class="sk-action sk-action--cart" title="Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="sk-action__label">{{ 'nav.cart' | t }}</span>
+          @if (cartService.cart().totalItems > 0) {
+            <span class="sk-action__badge">{{ cartService.cart().totalItems }}</span>
+          }
+        </a>
+      }
+
+      @if (authService.isLoggedIn()) {
+        <button (click)="logout()" class="sk-action sk-action--logout" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span class="sk-action__label">{{ 'nav.logout' | t }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Nav links row (desktop) -->
+  <nav class="sk-navlinks" aria-label="Category navigation">
+    <div class="sk-navlinks__inner dn-container">
+      <ul [class.open]="menuOpen()">
+        <li *ngFor="let link of navLinks">
+          <a [routerLink]="link.path" [queryParams]="link.params" routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: link.exact }"
+             (click)="closeMenu()">{{ link.label | t }}</a>
+        </li>
+        <li class="sk-navlinks__deals">
+          <a routerLink="/products" [queryParams]="{ sortBy: 'trending' }" (click)="closeMenu()">{{ 'nav.deals' | t }}</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,55 @@
+<div class="th-auth-page">
+  <div class="th-card th-auth-card">
+  <div class="th-auth-header">
+
+    <img src="assets/ps-logo.jpeg" alt="PS Sports" class="ps-auth-logo">
+<h1>{{ 'lg.welcomeBack' | t }}</h1>
+    <p class="th-text-muted">{{ 'lg.subtitle' | t }}</p>
+
+  </div>
+
+
+    <form (ngSubmit)="submit()" #loginForm="ngForm">
+      <div class="th-form-group">
+        <label>{{ 'pr.email' | t }}</label>
+        <input type="email" name="email" class="form-control" required
+               [(ngModel)]="form.email" placeholder="you@example.com">
+      </div>
+
+      <div class="th-form-group">
+        <label>{{ 'lg.password' | t }}</label>
+        <input type="password" name="password" class="form-control" required
+               [(ngModel)]="form.password" placeholder="••••••••">
+      </div>
+
+      @if (error()) {
+        <p class="th-error-text">{{ error() }}</p>
+      }
+
+      <button type="submit" class="btn-th-primary full-width" [disabled]="loading() || !loginForm.valid">
+        @if (loading()) { Logging in... } @else { Login }
+      </button>
+    </form>
+
+    <div class="sk-auth-divider"><span>{{ 'lg.or' | t }}</span></div>
+
+    <div class="sk-social-buttons">
+      <button type="button" class="sk-social-btn sk-social-btn--google" [disabled]="!!socialLoading()" (click)="signInWithGoogle()">
+        @if (socialLoading() === 'GOOGLE') { <i class="fa-solid fa-circle-notch fa-spin"></i> } @else { <i class="fa-brands fa-google"></i> }
+        Continue with Google
+      </button>
+    </div>
+
+    <div class="th-signup-options">
+      <p class="th-signup-options__label">{{ 'lg.newTo' | t }}</p>
+      <a routerLink="/register" class="th-signup-card th-signup-card--customer">
+        <div class="th-signup-card__icon"><i class="fa-solid fa-user-plus"></i></div>
+        <div class="th-signup-card__text">
+          <strong>{{ 'lg.signUpCustomer' | t }}</strong>
+          <span>{{ 'lg.shopJerseys' | t }}</span>
+        </div>
+        <i class="fa-solid fa-arrow-right th-signup-card__arrow"></i>
+      </a>
+    </div>
+  </div>
+</div>

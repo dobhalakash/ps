@@ -1,0 +1,63 @@
+<div class="th-page-container th-payment-page">
+
+  @if (loading()) {
+    <div class="th-card th-payment-card th-payment-loading">
+      <i class="fa-solid fa-circle-notch fa-spin"></i>
+      <p class="th-text-muted">Checking payment status...</p>
+    </div>
+  } @else if (cod()) {
+    <div class="th-card th-payment-card">
+      <div class="th-payment-success">
+        <i class="fa-solid fa-truck"></i>
+        <h1>Cash on Delivery</h1>
+        <p class="th-text-muted">This order will be paid for at the time of delivery. No online payment is needed.</p>
+        <button class="btn-th-primary" (click)="goToOrder()">View Order</button>
+      </div>
+    </div>
+  } @else if (paid()) {
+    <div class="th-card th-payment-card">
+      <div class="th-payment-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <h1>Payment Successful</h1>
+        <p class="th-text-muted">Your payment has been verified and your order is confirmed.</p>
+        <button class="btn-th-primary" (click)="goToOrder()">View Order</button>
+      </div>
+    </div>
+  } @else {
+    <div class="th-card th-payment-card">
+      <h1 class="th-payment-title">{{ isCodAdvance() ? 'Pay Advance to Confirm Order' : 'Complete Your Payment' }}</h1>
+      <p class="th-text-muted th-payment-subtitle">
+        @if (isCodAdvance()) {
+          This order is Cash on Delivery, but requires a small advance (transport charge) to be paid online before
+          it ships. The rest will be collected in cash when your order is delivered.
+        } @else {
+          Pay securely with UPI, card, or netbanking. We verify every payment with our payment partner before
+          confirming your order - this protects both you and us.
+        }
+      </p>
+
+      @if (orderInfo) {
+        <div class="th-payment-amount">
+          <span class="th-text-muted">{{ isCodAdvance() ? 'Advance to pay now' : 'Amount to pay' }}</span>
+          <span class="th-price th-payment-amount-value">₹{{ orderInfo.amount | number:'1.0-0' }}</span>
+        </div>
+      }
+
+      @if (error()) {
+        <p class="th-error-text">{{ error() }}</p>
+      }
+
+      <button class="btn-th-primary full-width th-confirm-btn" [disabled]="opening()" (click)="retry()">
+        @if (opening()) { Opening secure checkout... } @else { Pay Now }
+      </button>
+
+      <p class="th-text-muted th-upi-note">
+        <i class="fa-solid fa-shield-halved"></i>
+        Your order is only marked as paid after we verify the transaction - it cannot be faked or skipped.
+      </p>
+
+      <a [routerLink]="['/orders', orderId]" class="th-payment-cancel">Pay later (order is saved)</a>
+    </div>
+  }
+
+</div>

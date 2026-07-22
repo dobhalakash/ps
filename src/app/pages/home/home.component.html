@@ -1,0 +1,249 @@
+<!-- ══════════════════════════════════════════════════
+     PS SPORTS HERO — full-width continuous image slider
+     (no text, seamless right-to-left movement)
+══════════════════════════════════════════════════ -->
+<section class="ps-hero" aria-label="PS Sports">
+  <div class="ps-hero__track">
+    <img src="assets/ps-slider.png" alt="PS Sports" class="ps-hero__img">
+    <img src="assets/PS.png" alt="" aria-hidden="true" class="ps-hero__img">
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     SHOP BY CATEGORY
+══════════════════════════════════════════════════ -->
+<section class="dn-section dn-container" appScrollReveal>
+  <div class="dn-section-header">
+    <div class="dn-section-header__left">
+      <h2 class="dn-section-title">{{ 'home.shopBy' | t }}</h2>
+      <h2 class="dn-section-title dn-section-title--blue">{{ 'home.categoryWord' | t }}</h2>
+    </div>
+    <a routerLink="/products" class="dn-section-view-all">{{ 'common.viewAll' | t }} <i class="fa-solid fa-chevron-right"></i></a>
+  </div>
+  <div class="dn-cat-circles">
+    <a
+      *ngFor="let cat of catCircles"
+      [routerLink]="cat.path"
+      [queryParams]="cat.params"
+      class="dn-cat-circle"
+    >
+      <div class="dn-cat-circle__icon">
+        <i [class]="cat.icon"></i>
+      </div>
+      <span class="dn-cat-circle__label">{{ cat.label }}</span>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     PROMO BANNER CARDS
+══════════════════════════════════════════════════ -->
+<section class="dn-section dn-container" appScrollReveal>
+  <div class="dn-promo-row">
+    <a *ngFor="let p of promoBanners" [routerLink]="'/products'" [queryParams]="p.params"
+       class="dn-promo-card" [style.background]="p.bg">
+      <span class="dn-promo-card__tag">{{ p.tag }}</span>
+      <h3 class="dn-promo-card__title">{{ p.title }}</h3>
+      <p class="dn-promo-card__subtitle">{{ p.subtitle }}</p>
+      <span class="dn-promo-card__cta">{{ 'home.shopNow' | t }} <i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TOP BRANDS
+══════════════════════════════════════════════════ -->
+<section class="dn-section dn-container" appScrollReveal>
+  <div class="dn-section-header">
+    <div class="dn-section-header__left">
+      <h2 class="dn-section-title">{{ 'home.top' | t }}</h2>
+      <h2 class="dn-section-title dn-section-title--blue">{{ 'home.brands' | t }}</h2>
+    </div>
+    <a routerLink="/products" class="dn-section-view-all">{{ 'common.viewAll' | t }} <i class="fa-solid fa-chevron-right"></i></a>
+  </div>
+  <div class="dn-brands-row">
+    <a *ngFor="let b of brands" [routerLink]="b.path" class="dn-brand-pill">
+      <span>{{ b.name }}</span>
+    </a>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TRUST STRIP
+══════════════════════════════════════════════════ -->
+<div class="dn-trust-strip">
+  <div class="dn-trust-inner">
+    <div class="dn-trust-item">
+      <div class="dn-trust-icon"><i class="fa-solid fa-truck-fast"></i></div>
+      <div class="dn-trust-text">
+        <strong>{{ 'home.freeShipping' | t }}</strong>
+        <span>{{ 'home.freeShippingDesc' | t }}</span>
+      </div>
+    </div>
+    <div class="dn-trust-item">
+      <div class="dn-trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="dn-trust-text">
+        <strong>{{ 'home.original' | t }}</strong>
+        <span>{{ 'home.originalDesc' | t }}</span>
+      </div>
+    </div>
+    <div class="dn-trust-item">
+      <div class="dn-trust-icon"><i class="fa-solid fa-rotate-left"></i></div>
+      <div class="dn-trust-text">
+        <strong>{{ 'home.easyReturns' | t }}</strong>
+        <span>{{ 'home.trialDesc' | t }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     DEAL OF THE DAY
+══════════════════════════════════════════════════ -->
+<section class="dn-section dn-container" appScrollReveal>
+  <div class="dn-section-header">
+    <h2 class="dn-section-title">{{ 'home.dealOfDay' | t }}</h2>
+    <div class="dn-countdown">
+      <div class="dn-countdown-unit" *ngFor="let u of countdown">
+        <span class="dn-countdown-num">{{ u.value | number:'2.0-0' }}</span>
+        <span class="dn-countdown-label">{{ u.label }}</span>
+      </div>
+    </div>
+    <a routerLink="/products" class="dn-section-view-all">{{ 'home.viewAllDeals' | t }} <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+
+  <div class="dn-deals-row">
+    <div
+  class="th-product-card dn-card"
+  *ngFor="let p of dealProducts(); trackBy: trackByProductId">
+      <a [routerLink]="['/products', p.id]" class="th-product-image-link">
+        @if (p.discountPercentage > 0) {
+          <span class="dn-badge-sale th-card-badge">{{ p.discountPercentage }}% OFF</span>
+        }
+        <button class="th-wishlist-btn" (click)="$event.preventDefault()"><i class="fa-regular fa-heart"></i></button>
+        <img [src]="p.primaryImageUrl || 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?w=400'" [alt]="p.name" loading="lazy">
+      </a>
+      <div class="th-product-info">
+        <span class="th-product-team th-text-muted">{{ p.brand }}</span>
+        <a [routerLink]="['/products', p.id]" class="th-product-name">{{ p.name }}</a>
+        <div class="th-product-price-row">
+          @if (p.discountPercentage > 0) {
+            <span class="th-price-strike">₹{{ p.price | number:'1.0-0' }}</span>
+          }
+          <span class="th-price">₹{{ p.finalPrice | number:'1.0-0' }}</span>
+        </div>
+        @if (authService.canShop()) {
+          <button class="th-add-cart-btn" (click)="addToCart(p)">
+            <i class="fa-solid fa-cart-plus"></i> {{ 'common.addToCart' | t }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (dealProducts().length === 0) {
+      <p class="th-text-muted">{{ 'home.loadingDeals' | t }}</p>
+    }
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     BEST SELLERS
+══════════════════════════════════════════════════ -->
+@if (trending().length > 0) {
+  <section class="dn-section dn-container" appScrollReveal>
+    <div class="dn-section-header">
+      <h2 class="dn-section-title">{{ 'home.bestSellers' | t }}</h2>
+      <a routerLink="/products" [queryParams]="{ sortBy: 'trending' }" class="dn-section-view-all">{{ 'common.viewAll' | t }} <i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+    <div class="th-product-grid">
+     <div
+  class="th-product-card"
+  *ngFor="let p of trending(); trackBy: trackByProductId">
+        <a [routerLink]="['/products', p.id]" class="th-product-image-link">
+          @if (p.trending) { <span class="dn-badge-trending th-card-badge">{{ 'home.bestseller' | t }}</span> }
+          <button class="th-wishlist-btn" (click)="$event.preventDefault()"><i class="fa-regular fa-heart"></i></button>
+          <img [src]="p.primaryImageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400'" [alt]="p.name" loading="lazy">
+        </a>
+        <div class="th-product-info">
+          <span class="th-product-team th-text-muted">{{ p.brand }}</span>
+          <a [routerLink]="['/products', p.id]" class="th-product-name">{{ p.name }}</a>
+          <div class="th-product-price-row">
+            @if (p.discountPercentage > 0) { <span class="th-price-strike">₹{{ p.price | number:'1.0-0' }}</span> }
+            <span class="th-price">₹{{ p.finalPrice | number:'1.0-0' }}</span>
+          </div>
+          @if (authService.canShop()) {
+            <button class="th-add-cart-btn" (click)="addToCart(p)"><i class="fa-solid fa-cart-plus"></i> {{ 'common.addToCart' | t }}</button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- ══════════════════════════════════════════════════
+     CTA BANNER
+══════════════════════════════════════════════════ -->
+<section class="dn-cta-banner dn-container" appScrollReveal>
+  <div class="dn-cta-banner__inner">
+    <div class="dn-cta-banner__text">
+      <span class="dn-cta-eyebrow">{{ 'home.premiumSportswear' | t }}</span>
+      <h2>{{ 'home.gearUp' | t }}</h2>
+      <p>
+        Discover premium jerseys, teamwear, and performance apparel designed
+        for athletes who demand comfort, durability, and style on and off the field.
+      </p>
+      <a routerLink="/products" class="btn-outline-white">{{ 'home.shopCollection' | t }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════════════════ -->
+<section class="dn-section dn-container" appScrollReveal>
+  <div class="dn-section-header">
+    <h2 class="dn-section-title">{{ 'home.customersSay' | t }}</h2>
+  </div>
+  <div class="dn-reviews-grid">
+    <div class="dn-review-card dn-card" *ngFor="let t of testimonials">
+      <div class="dn-review-stars">
+        <i class="fa-solid fa-star" *ngFor="let s of [1,2,3,4,5]"></i>
+      </div>
+      <p class="dn-review-text">"{{ t.quote }}"</p>
+      <div class="dn-review-author">
+        <div class="dn-review-avatar">{{ t.name[0] }}</div>
+        <div>
+          <strong>{{ t.name }}</strong>
+          <span>{{ t.location }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     NEWSLETTER
+══════════════════════════════════════════════════ -->
+<section class="dn-newsletter-section dn-container" appScrollReveal>
+  <div class="dn-newsletter-card dn-card">
+    <div class="dn-newsletter-inner">
+      <div class="dn-newsletter-text">
+        <h2>{{ 'home.stayAhead' | t }}</h2>
+        <p>Get early access to new jersey collections, exclusive discounts,
+    custom teamwear offers, and premium sportswear updates.</p>
+      </div>
+      @if (!newsletterSubmitted()) {
+        <div class="dn-newsletter-form">
+          <input type="email" class="dn-newsletter-input" placeholder="Enter your email address"
+                 [value]="newsletterEmail()" (input)="newsletterEmail.set($any($event.target).value)" />
+          <button class="btn-primary" (click)="subscribeNewsletter()">{{ 'home.subscribe' | t }}</button>
+        </div>
+      } @else {
+        <p class="th-success-text"><i class="fa-solid fa-circle-check"></i> {{ 'home.thanksSubscribing' | t }}</p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Bottom padding -->
+<div style="height:32px"></div>

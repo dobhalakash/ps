@@ -1,0 +1,50 @@
+<div class="th-page-container th-verify-page">
+  <div class="th-card th-verify-card">
+
+    @if (emailVerified()) {
+      <div class="th-payment-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <h1>You're all set!</h1>
+        <p class="th-text-muted">Your account is fully verified.</p>
+        <button class="btn-th-primary" (click)="continue()">Continue Shopping</button>
+      </div>
+    } @else {
+      <h1 class="th-verify-title">Verify Your Account</h1>
+      <p class="th-text-muted">
+        We've sent a verification code to your email.
+        Enter it below to confirm it's really you.
+      </p>
+
+      @if (resendMessage()) {
+        <p class="th-verify-note">{{ resendMessage() }}</p>
+      }
+
+      <!-- Email verification -->
+      <div class="th-verify-section">
+        <div class="th-verify-section__header">
+          <i class="fa-regular fa-envelope"></i>
+          <span>Email - {{ email }}</span>
+          @if (emailVerified()) {
+            <span class="th-verify-badge th-verify-badge--done"><i class="fa-solid fa-check"></i> Verified</span>
+          }
+        </div>
+
+        @if (!emailVerified()) {
+          <div class="th-verify-form">
+            <input type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" [(ngModel)]="emailCode" class="th-verify-input">
+            <button class="btn-th-primary" [disabled]="verifyingEmail()" (click)="submitEmailCode()">
+              @if (verifyingEmail()) { Verifying... } @else { Verify }
+            </button>
+          </div>
+          @if (emailError()) { <p class="th-error-text">{{ emailError() }}</p> }
+          <button class="th-verify-resend" [disabled]="resendingEmail()" (click)="resend('EMAIL')">
+            @if (resendingEmail()) { Sending... } @else { Resend code }
+          </button>
+        }
+      </div>
+
+      <button class="th-verify-skip" (click)="continue()">Skip for now</button>
+    }
+
+  </div>
+</div>

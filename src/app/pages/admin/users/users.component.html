@@ -1,0 +1,75 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">User Management</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      <div class="th-filter-chips-row">
+        @for (r of roles; track r) {
+          <button class="th-filter-chip" [class.active]="role() === r" (click)="setRole(r)">{{ r.replace('_', ' ') }}</button>
+        }
+      </div>
+
+      @if (loading()) {
+        <p class="th-text-muted">Loading users...</p>
+      } @else if (users().length === 0) {
+        <div class="th-empty-state th-card">
+          <i class="fa-solid fa-users"></i>
+          <p>No users found for this role.</p>
+        </div>
+      } @else {
+        <div class="th-table-responsive">
+          <table class="th-data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                <tr>
+                  <td>{{ user.firstName }} {{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.mobileNumber }}</td>
+                  <td>
+                    <span class="th-status-badge" [ngClass]="user.enabled ? 'th-status-delivered' : 'th-status-cancelled'">
+                      {{ user.enabled ? 'Active' : 'Disabled' }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="th-table-actions">
+                      @if (user.enabled) {
+                        <button class="th-reject-btn" (click)="toggleEnabled(user)">Disable</button>
+                      } @else {
+                        <button class="th-approve-btn" (click)="toggleEnabled(user)">Enable</button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (totalPages() > 1) {
+          <div class="th-pagination">
+            <button class="btn-th-outline" (click)="goToPage(page() - 1)" [disabled]="page() === 0">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <span class="th-page-info">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+            <button class="btn-th-outline" (click)="goToPage(page() + 1)" [disabled]="page() >= totalPages() - 1">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

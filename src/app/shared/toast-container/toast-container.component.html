@@ -1,0 +1,13 @@
+<div class="sk-toast-stack" aria-live="polite">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="sk-toast" [class.sk-toast--error]="toast.type === 'error'" [class.sk-toast--info]="toast.type === 'info'">
+      <i class="fa-solid" [class.fa-circle-check]="toast.type === 'success'"
+         [class.fa-circle-exclamation]="toast.type === 'error'"
+         [class.fa-circle-info]="toast.type === 'info'"></i>
+      <span>{{ toast.text }}</span>
+      <button type="button" (click)="toastService.dismiss(toast.id)" aria-label="Dismiss">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+</div>

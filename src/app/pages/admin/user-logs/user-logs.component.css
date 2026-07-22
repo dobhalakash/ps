@@ -1,0 +1,14 @@
+.th-log-time {
+  white-space: nowrap;
+  font-size: .82rem;
+  color: var(--th-text-muted);
+}
+
+.th-log-path {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .82rem;
+  color: var(--th-text-muted);
+}

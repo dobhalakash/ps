@@ -1,0 +1,45 @@
+<!-- ══ MOBILE BOTTOM TAB BAR (Flipkart-style) ══ -->
+<nav class="mt-tabbar" aria-label="Mobile navigation">
+  <a routerLink="/" (click)="scrollToTop()" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="mt-tab">
+    <i class="fa-solid fa-house"></i>
+    <span>{{ 'nav.home' | t }}</span>
+  </a>
+
+  <a routerLink="/products" (click)="scrollToTop()" routerLinkActive="active" class="mt-tab">
+    <i class="fa-solid fa-shirt"></i>
+    <span>{{ 'nav.shop' | t }}</span>
+  </a>
+
+  @if (authService.canShop()) {
+    <a routerLink="/cart" (click)="scrollToTop()" routerLinkActive="active" class="mt-tab mt-tab--cart">
+      <span class="mt-tab__icon-wrap">
+        <i class="fa-solid fa-cart-shopping"></i>
+        @if (cartService.cart().totalItems > 0) {
+          <span class="mt-tab__badge">{{ cartService.cart().totalItems }}</span>
+        }
+      </span>
+      <span>{{ 'nav.cart' | t }}</span>
+    </a>
+
+    <a routerLink="/wishlist" (click)="scrollToTop()" routerLinkActive="active" class="mt-tab">
+      <i class="fa-regular fa-heart"></i>
+      <span>{{ 'nav.wishlist' | t }}</span>
+    </a>
+  } @else {
+    <a [routerLink]="dashboardLink" (click)="scrollToTop()" routerLinkActive="active" class="mt-tab">
+      <i class="fa-solid fa-gauge"></i>
+      <span>{{ 'nav.dashboard' | t }}</span>
+    </a>
+
+    <a [routerLink]="authService.currentRole() === 'SUPER_ADMIN' ? '/admin/support' : '/business/support'"
+       (click)="scrollToTop()" routerLinkActive="active" class="mt-tab">
+      <i class="fa-solid fa-headset"></i>
+      <span>{{ 'nav.support' | t }}</span>
+    </a>
+  }
+
+  <a [routerLink]="authService.isLoggedIn() ? dashboardLink : '/login'" (click)="scrollToTop()" routerLinkActive="active" class="mt-tab">
+    <i class="fa-regular fa-user"></i>
+    <span>{{ (authService.isLoggedIn() ? 'nav.account' : 'nav.signIn') | t }}</span>
+  </a>
+</nav>

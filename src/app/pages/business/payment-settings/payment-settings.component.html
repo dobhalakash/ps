@@ -1,0 +1,71 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Payment & Banking Details</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-business-nav></app-business-nav>
+    </aside>
+
+    <div class="th-admin-content">
+      @if (loading()) {
+        <p class="th-text-muted">Loading...</p>
+      } @else {
+        <div class="th-card th-settings-card">
+          <p class="th-text-muted th-settings-intro">
+            These details are used by the platform admin to pay you your share after each order.
+            Keep them up to date so your payouts reach you without delay.
+          </p>
+
+          <h3 class="th-settings-section-title"><i class="fa-solid fa-qrcode"></i> UPI Details</h3>
+          <div class="th-form-group">
+            <label>Business Logo (for invoices)</label>
+            <div class="th-image-input-row">
+              <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onLogoSelected($event)">
+              @if (uploadingLogo) { <span class="th-text-muted"><i class="fa-solid fa-circle-notch fa-spin"></i> Uploading...</span> }
+            </div>
+            @if (form.logoUrl) {
+              <div class="th-image-chip" style="margin-top:.5rem;">
+                <img [src]="form.logoUrl" alt="Business logo">
+                <button type="button" (click)="form.logoUrl = ''"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            }
+          </div>
+          <div class="th-form-group">
+            <label>UPI ID</label>
+            <input type="text" class="form-control" placeholder="yourname@upi" [(ngModel)]="form.upiId">
+            <span class="th-form-hint">Used for UPI-based payouts (PhonePe, Google Pay, Paytm, etc.)</span>
+          </div>
+
+          <h3 class="th-settings-section-title"><i class="fa-solid fa-building-columns"></i> Bank Account Details</h3>
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Account Holder Name</label>
+              <input type="text" class="form-control" placeholder="Full name on bank account" [(ngModel)]="form.accountHolderName">
+            </div>
+            <div class="th-form-group">
+              <label>Bank Name</label>
+              <input type="text" class="form-control" placeholder="e.g. State Bank of India" [(ngModel)]="form.bankName">
+            </div>
+          </div>
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>Account Number</label>
+              <input type="text" class="form-control" placeholder="Account number" [(ngModel)]="form.bankAccountNumber">
+            </div>
+            <div class="th-form-group">
+              <label>IFSC Code</label>
+              <input type="text" class="form-control" placeholder="e.g. SBIN0001234" [(ngModel)]="form.ifscCode" style="text-transform: uppercase">
+            </div>
+          </div>
+
+          @if (error()) { <p class="th-error-text">{{ error() }}</p> }
+          @if (saved()) { <p class="th-success-text"><i class="fa-solid fa-circle-check"></i> Saved successfully.</p> }
+
+          <button type="button" class="btn-th-primary" [disabled]="saving()" (click)="save()">
+            @if (saving()) { Saving... } @else { Save Details }
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

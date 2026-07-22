@@ -1,0 +1,69 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">{{ 'ct.title' | t }}</h1>
+
+  <div class="th-contact-layout">
+    <div class="th-card th-contact-form-card">
+      <h6>{{ 'ct.sendMessage' | t }}</h6>
+
+      @if (submitted()) {
+        <div class="th-success-box">
+          <i class="fa-solid fa-circle-check"></i>
+          <p>{{ 'ct.thanks' | t }}</p>
+        </div>
+      } @else {
+        <form (ngSubmit)="submit()" #contactForm="ngForm">
+          <div class="th-form-row">
+            <div class="th-form-group">
+              <label>{{ 'ct.name' | t }}</label>
+              <input type="text" name="name" class="form-control" required [(ngModel)]="form.name">
+            </div>
+            <div class="th-form-group">
+              <label>{{ 'pr.email' | t }}</label>
+              <input type="email" name="email" class="form-control" required [(ngModel)]="form.email">
+            </div>
+          </div>
+          <div class="th-form-group">
+            <label>{{ 'ct.subject' | t }}</label>
+            <input type="text" name="subject" class="form-control" required [(ngModel)]="form.subject">
+          </div>
+          <div class="th-form-group">
+            <label>{{ 'ct.message' | t }}</label>
+            <textarea name="message" class="form-control" rows="5" required [(ngModel)]="form.message"></textarea>
+          </div>
+          <button type="submit" class="btn-th-primary" [disabled]="!contactForm.valid">{{ 'ct.send' | t }}</button>
+        </form>
+      }
+    </div>
+
+    <div class="th-contact-info">
+      <div class="th-card th-contact-info-card">
+        <i class="fa-solid fa-location-dot"></i>
+        <h6>{{ 'ct.visitUs' | t }}</h6>
+        <p class="th-text-muted">PS Sports HQ, 4th Floor, Stadium Plaza, Mumbai, Maharashtra 400001</p>
+      </div>
+      <div class="th-card th-contact-info-card">
+        <i class="fa-solid fa-phone"></i>
+        <h6>{{ 'ct.callUs' | t }}</h6>
+        <p class="th-text-muted">+91 98765 43210 (Mon-Sat, 9 AM - 7 PM)</p>
+      </div>
+      <div class="th-card th-contact-info-card">
+        <i class="fa-solid fa-envelope"></i>
+        <h6>{{ 'ct.emailUs' | t }}</h6>
+        <p class="th-text-muted">support&#64;sksports.example</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQs -->
+  <section class="th-section">
+    <h2 class="th-section-title">{{ 'ct.faq' | t }}</h2>
+    <div class="th-faq-list">
+      @for (faq of faqs; track faq.question) {
+        <div class="th-card th-faq-item">
+          <h6>{{ faq.question }}</h6>
+          <p class="th-text-muted">{{ faq.answer }}</p>
+        </div>
+      }
+    </div>
+  </section>
+</div>

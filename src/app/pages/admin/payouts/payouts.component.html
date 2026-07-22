@@ -1,0 +1,273 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Payout Management</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+
+      <div class="th-filter-row">
+        <select class="form-control th-filter-select" [(ngModel)]="statusFilter" (ngModelChange)="currentPage.set(0); load()">
+          <option value="">All Payouts</option>
+          @for (s of statuses; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="th-text-muted">{{ totalElements() }} total</span>
+      </div>
+
+      @if (loading()) {
+        <p class="th-text-muted">Loading payouts...</p>
+      } @else if (payouts().length === 0) {
+        <div class="th-card th-empty-state">
+          <i class="fa-solid fa-wallet"></i>
+          <p>No payouts match this filter.</p>
+        </div>
+      } @else {
+        <div class="th-card th-table-card">
+          <div class="th-table-scroll">
+            <table class="th-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Business</th>
+                  <th>Customer</th>
+                  <th>Order Total</th>
+                  <th>Commission</th>
+                  <th>Owed</th>
+                  <th>Status</th>
+                  <th>Proof</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of payouts(); track p.id) {
+                  <tr>
+                    <td><strong>{{ p.orderNumber }}</strong></td>
+                    <td>{{ p.businessName }}</td>
+                    <td>{{ p.customerName || '—' }}</td>
+                    <td>₹{{ p.amountPaid | number:'1.0-2' }}</td>
+                    <td class="th-text-muted">₹{{ p.platformCommission | number:'1.0-2' }}</td>
+                    <td><strong>₹{{ p.businessShare | number:'1.0-2' }}</strong></td>
+                    <td><span class="th-status-badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span></td>
+                    <td>
+                      @if (p.proofUrl) {
+                        <a [href]="p.proofUrl" target="_blank" rel="noopener" class="th-proof-link">
+                          <i class="fa-solid fa-image"></i> View
+                        </a>
+                      } @else {
+                        <span class="th-text-muted">—</span>
+                      }
+                    </td>
+                    <td>
+                      <button type="button" class="btn-th-sm btn-th-primary" (click)="openDetail(p)">Manage</button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (totalPages() > 1) {
+            <div class="th-pagination">
+              <button type="button" class="btn-th-sm btn-th-outline" [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">← Prev</button>
+              <span>{{ currentPage() + 1 }} / {{ totalPages() }}</span>
+              <button type="button" class="btn-th-sm btn-th-outline" [disabled]="currentPage() >= totalPages() - 1" (click)="goToPage(currentPage() + 1)">Next →</button>
+            </div>
+          }
+        </div>
+      }
+
+      @if (selectedPayout()) {
+        <div class="th-payout-detail-overlay" (click)="closeDetail()">
+          <div class="th-payout-detail" (click)="$event.stopPropagation()">
+
+            <!-- Header -->
+            <div class="th-payout-detail__header">
+              <h3>{{ selectedPayout()!.businessName }} — {{ selectedPayout()!.orderNumber }}</h3>
+              <button type="button" class="th-payout-detail__close" (click)="closeDetail()">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="th-payout-detail__body">
+
+              <!-- Section 1: Amount Cards -->
+              <p class="th-section-label"><i class="fa-solid fa-indian-rupee-sign"></i> Payment Breakdown</p>
+              <div class="th-amounts-block">
+                <div class="th-amount-card th-amount-card--total">
+                  <span>Order Total</span>
+                  <strong>₹{{ selectedPayout()!.amountPaid | number:'1.0-2' }}</strong>
+                </div>
+                <div class="th-amount-card th-amount-card--commission">
+                  <span>Commission (10%)</span>
+                  <strong>₹{{ selectedPayout()!.platformCommission | number:'1.0-2' }}</strong>
+                </div>
+                <div class="th-amount-card th-amount-card--owed">
+                  <span>Business Share</span>
+                  <strong>₹{{ selectedPayout()!.businessShare | number:'1.0-2' }}</strong>
+                </div>
+              </div>
+
+              <div class="th-section-divider"></div>
+
+              <!-- Section 2: Banking Details -->
+              <div class="th-banking-block">
+                <h5><i class="fa-solid fa-building-columns"></i> Banking Details</h5>
+                <div class="th-banking-grid">
+                  <div><span>UPI ID</span><strong>{{ selectedPayout()!.upiId || '—' }}</strong></div>
+                  <div><span>Account Holder</span><strong>{{ selectedPayout()!.accountHolderName || '—' }}</strong></div>
+                  <div><span>Bank</span><strong>{{ selectedPayout()!.bankName || '—' }}</strong></div>
+                  <div><span>Account No.</span><strong>{{ selectedPayout()!.bankAccountNumber || '—' }}</strong></div>
+                  <div><span>IFSC</span><strong>{{ selectedPayout()!.ifscCode || '—' }}</strong></div>
+                </div>
+              </div>
+
+              <div class="th-section-divider"></div>
+
+              <!-- Section 3: Transaction Info -->
+              <p class="th-section-label"><i class="fa-solid fa-circle-info"></i> Transaction Details</p>
+              <div class="th-info-grid">
+                <div class="th-info-item">
+                  <span>Status</span>
+                  <span class="th-status-badge" [ngClass]="statusClass(selectedPayout()!.status)">{{ selectedPayout()!.status }}</span>
+                </div>
+                <div class="th-info-item">
+                  <span>Razorpay Payment ID</span>
+                  <strong>{{ selectedPayout()!.razorpayPaymentId || '—' }}</strong>
+                </div>
+                @if (selectedPayout()!.payoutMethod) {
+                  <div class="th-info-item">
+                    <span>Payout Method</span>
+                    <strong>{{ selectedPayout()!.payoutMethod }}</strong>
+                  </div>
+                }
+                @if (selectedPayout()!.utrNumber) {
+                  <div class="th-info-item">
+                    <span>UTR / Reference</span>
+                    <strong>{{ selectedPayout()!.utrNumber }}</strong>
+                  </div>
+                }
+                @if (selectedPayout()!.payoutDate) {
+                  <div class="th-info-item">
+                    <span>Paid On</span>
+                    <strong>{{ selectedPayout()!.payoutDate | date:'dd MMM yyyy, hh:mm a' }}</strong>
+                  </div>
+                }
+                @if (selectedPayout()!.remarks) {
+                  <div class="th-info-item">
+                    <span>Remarks</span>
+                    <strong>{{ selectedPayout()!.remarks }}</strong>
+                  </div>
+                }
+                @if (selectedPayout()!.proofUrl) {
+                  <div class="th-info-item">
+                    <span>Payment Proof</span>
+                    <a [href]="selectedPayout()!.proofUrl!" target="_blank" rel="noopener" class="th-proof-link">
+                      <i class="fa-solid fa-image"></i> {{ selectedPayout()!.proofName || 'View Proof' }}
+                    </a>
+                  </div>
+                }
+                @if (selectedPayout()!.disputeNote) {
+                  <div class="th-info-item th-info-item--dispute">
+                    <span>Dispute Note</span>
+                    <strong>{{ selectedPayout()!.disputeNote }}</strong>
+                  </div>
+                }
+              </div>
+
+              <div class="th-section-divider"></div>
+
+              <!-- Section 4: Update Payout -->
+              <button type="button" class="btn-th-primary th-update-btn"
+                      (click)="showUpdateForm.set(!showUpdateForm())">
+                <i class="fa-solid fa-pen-to-square"></i>
+                {{ showUpdateForm() ? 'Cancel' : 'Update Payout' }}
+              </button>
+
+              @if (showUpdateForm()) {
+                <div class="th-update-form">
+                  <div class="th-form-row">
+                    <div class="th-form-group">
+                      <label>Status</label>
+                      <select class="form-control" [(ngModel)]="updateForm.status">
+                        @for (s of statuses; track s) {
+                          <option [value]="s">{{ s }}</option>
+                        }
+                      </select>
+                    </div>
+                    <div class="th-form-group">
+                      <label>Payment Method</label>
+                      <select class="form-control" [(ngModel)]="updateForm.payoutMethod">
+                        <option value="">— select —</option>
+                        @for (m of methods; track m) {
+                          <option [value]="m">{{ m }}</option>
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <div class="th-form-group">
+                    <label>UTR / Reference Number</label>
+                    <input type="text" class="form-control" placeholder="e.g. 423156789012" [(ngModel)]="updateForm.utrNumber">
+                  </div>
+                  <div class="th-form-group">
+                    <label>Remarks / Notes</label>
+                    <textarea class="form-control" rows="2" placeholder="Optional notes about this payout..." [(ngModel)]="updateForm.remarks"></textarea>
+                  </div>
+                  <div class="th-form-group">
+                    <label>Payment Proof (screenshot/PDF)</label>
+                    @if (updateForm.proofName) {
+                      <div class="th-proof-attached">
+                        <i class="fa-solid fa-paperclip"></i> {{ updateForm.proofName }}
+                        <button type="button" (click)="updateForm.proofUrl = ''; updateForm.proofName = ''">
+                          <i class="fa-solid fa-xmark"></i>
+                        </button>
+                      </div>
+                    } @else {
+                      <label class="th-upload-label" [class.disabled]="uploading()">
+                        @if (uploading()) { <i class="fa-solid fa-circle-notch fa-spin"></i> Uploading... }
+                        @else { <i class="fa-solid fa-cloud-arrow-up"></i> Upload Proof }
+                        <input type="file" hidden [disabled]="uploading()" (change)="onProofFileSelected($event)">
+                      </label>
+                    }
+                  </div>
+                  @if (updateError()) { <p class="th-error-text">{{ updateError() }}</p> }
+                  <button type="button" class="btn-th-primary" style="width:100%;padding:11px;border-radius:8px;margin-top:8px" [disabled]="updating()" (click)="submitUpdate()">
+                    @if (updating()) { <i class="fa-solid fa-circle-notch fa-spin"></i> Saving... } @else { <i class="fa-solid fa-check"></i> Save Changes }
+                  </button>
+                </div>
+              }
+
+              <div class="th-section-divider"></div>
+
+              <!-- Section 5: Audit Trail -->
+              <h4 class="th-detail-history-title"><i class="fa-solid fa-clock-rotate-left"></i> Audit Trail</h4>
+              @if (loadingHistory()) {
+                <p class="th-text-muted">Loading...</p>
+              } @else if (history().length === 0) {
+                <p class="th-text-muted">No status changes recorded yet.</p>
+              } @else {
+                <div class="th-history-list">
+                  @for (h of history(); track h.id) {
+                    <div class="th-history-item">
+                      <div class="th-history-item__dot"></div>
+                      <div>
+                        <span class="th-status-badge th-status-badge--sm" [ngClass]="statusClass(h.newStatus)">{{ h.newStatus }}</span>
+                        <span class="th-text-muted"> by {{ h.changedByName }}</span>
+                        <span class="th-text-muted"> — {{ h.changedAt | date:'dd MMM yyyy, hh:mm a' }}</span>
+                        @if (h.note) { <p class="th-history-note">{{ h.note }}</p> }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

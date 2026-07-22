@@ -1,0 +1,164 @@
+<div class="th-page-container">
+  <h1 class="th-section-title">Payment Tracking</h1>
+
+  <div class="th-admin-page">
+    <aside class="th-admin-sidebar">
+      <app-admin-nav></app-admin-nav>
+    </aside>
+
+    <div class="th-admin-content">
+
+      <!-- Summary cards -->
+      @if (summary()) {
+        <div class="th-pay-summary">
+          <div class="th-pay-card th-pay-card--success">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <span>Successful</span>
+              <strong>{{ summary()!.totalSuccessful | number }}</strong>
+              <em>₹{{ summary()!.totalRevenue | number:'1.0-2' }}</em>
+            </div>
+          </div>
+          <div class="th-pay-card th-pay-card--pending">
+            <i class="fa-solid fa-clock"></i>
+            <div>
+              <span>Pending</span>
+              <strong>{{ summary()!.totalPending | number }}</strong>
+            </div>
+          </div>
+          <div class="th-pay-card th-pay-card--failed">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <div>
+              <span>Failed</span>
+              <strong>{{ summary()!.totalFailed | number }}</strong>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Filter -->
+      <div class="th-filter-row">
+        <select class="form-control th-filter-select"
+                [(ngModel)]="statusFilter" (ngModelChange)="currentPage.set(0); load()">
+          <option value="">All Transactions</option>
+          <option value="SUCCESS">Successful</option>
+          <option value="PENDING">Pending</option>
+          <option value="FAILED">Failed</option>
+          <option value="CANCELLED">Cancelled</option>
+          <option value="REFUNDED">Refunded</option>
+        </select>
+        <span class="th-text-muted">{{ totalElements() | number }} records</span>
+      </div>
+
+      <!-- Table -->
+      @if (loading()) {
+        <p class="th-text-muted">Loading payments...</p>
+      } @else if (payments().length === 0) {
+        <div class="th-card th-empty-state">
+          <i class="fa-solid fa-receipt"></i>
+          <p>No payment records match this filter.</p>
+        </div>
+      } @else {
+        <div class="th-card th-table-card">
+          <div class="th-table-scroll">
+            <table class="th-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of payments(); track p.id) {
+                  <tr class="th-pay-row" [class.th-pay-row--expanded]="expanded() === p.id">
+                    <td><strong>{{ p.orderNumber }}</strong></td>
+                    <td>
+                      <div>{{ p.customerName || '—' }}</div>
+                      <div class="th-text-muted th-pay-email">{{ p.customerEmail || '' }}</div>
+                    </td>
+                    <td>
+                      <span class="th-method-badge th-method-badge--{{ (p.paymentMethod || 'razorpay').toLowerCase() }}">
+                        @if (p.paymentMethod === 'COD') { <i class="fa-solid fa-money-bill-wave"></i> }
+                        @else { <i class="fa-solid fa-credit-card"></i> }
+                        {{ p.paymentMethod || 'Razorpay' }}
+                      </span>
+                    </td>
+                    <td>
+                      <strong>₹{{ p.amount | number:'1.0-2' }}</strong>
+                      @if (p.codDueAmount > 0) {
+                        <div class="th-text-muted th-pay-cod">COD due: ₹{{ p.codDueAmount | number:'1.0-2' }}</div>
+                      }
+                    </td>
+                    <td>
+                      <span class="th-status-badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span>
+                    </td>
+                    <td class="th-text-muted">{{ (p.paidAt || p.createdAt) | date:'dd MMM yyyy' }}</td>
+                    <td>
+                      <button type="button" class="btn-th-sm btn-th-outline" (click)="toggle(p.id)">
+                        {{ expanded() === p.id ? 'Hide' : 'Details' }}
+                      </button>
+                    </td>
+                  </tr>
+                  @if (expanded() === p.id) {
+                    <tr class="th-pay-detail-row">
+                      <td colspan="7">
+                        <div class="th-pay-detail-grid">
+                          <div>
+                            <span>Razorpay Order ID</span>
+                            <strong>{{ p.gatewayOrderId || '—' }}</strong>
+                          </div>
+                          <div>
+                            <span>Razorpay Payment ID</span>
+                            <strong>{{ p.gatewayPaymentId || '—' }}</strong>
+                          </div>
+                          <div>
+                            <span>Amount Collected</span>
+                            <strong>₹{{ p.amount | number:'1.0-2' }}</strong>
+                          </div>
+                          @if (p.codDueAmount > 0) {
+                            <div>
+                              <span>COD Due (cash at door)</span>
+                              <strong>₹{{ p.codDueAmount | number:'1.0-2' }}</strong>
+                            </div>
+                          }
+                          <div>
+                            <span>Payment Date</span>
+                            <strong>{{ p.paidAt ? (p.paidAt | date:'dd MMM yyyy, HH:mm') : '—' }}</strong>
+                          </div>
+                          <div>
+                            <span>Record Created</span>
+                            <strong>{{ p.createdAt | date:'dd MMM yyyy, HH:mm' }}</strong>
+                          </div>
+                          <div>
+                            <span>Customer Email</span>
+                            <strong>{{ p.customerEmail || '—' }}</strong>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          @if (totalPages() > 1) {
+            <div class="th-pagination">
+              <button type="button" class="btn-th-sm btn-th-outline"
+                      [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">← Prev</button>
+              <span class="th-text-muted">{{ currentPage() + 1 }} / {{ totalPages() }}</span>
+              <button type="button" class="btn-th-sm btn-th-outline"
+                      [disabled]="currentPage() >= totalPages() - 1" (click)="goToPage(currentPage() + 1)">Next →</button>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

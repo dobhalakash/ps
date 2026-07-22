@@ -1,0 +1,17 @@
+.th-coupon-help {
+  padding: 1.25rem;
+}
+
+.th-coupon-help h6 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.th-coupon-help ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--th-text-muted);
+  line-height: 1.7;
+}
