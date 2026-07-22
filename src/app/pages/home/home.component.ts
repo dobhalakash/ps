@@ -97,9 +97,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   /* ── Top brands ── */
   brands = [
-    { name: 'Nike', path: '/products', params: { brand: 'Nike' } },
-    { name: 'Adidas', path: '/products', params: { brand: 'Adidas' } },
-    { name: 'Puma', path: '/products', params: { brand: 'Puma' } },
+    { name: 'Anna Power', path: '/products', params: { brand: 'Anna Power' } },
+    { name: 'King', path: '/products', params: { brand: 'King' } },
+    { name: 'Prime Editon', path: '/products', params: { brand: 'Prime Edition' } },
     { name: 'Under Armour', path: '/products', params: { brand: 'Under Armour' } },
     { name: 'Asics', path: '/products', params: { brand: 'Asics' } },
     { name: 'Yonex', path: '/products', params: { brand: 'Yonex' } },
