@@ -18,11 +18,11 @@ import { FEATURES } from '../../../core/edition';
 })
 export class BusinessProductsComponent implements OnInit {
   // Cricket bat spec dropdown options (PS Sports)
-  readonly batWeightOptions = ['Light (1100-1180 g)', 'Medium (1180-1250 g)', 'Heavy (1250-1350 g)'];
+  readonly batWeightOptions = ['Light (500-800 g)', 'Medium (900-1020 g)', 'Heavy (1020-1200 g)'];
   readonly bladeTypeOptions = ['Full Profile', 'Mid Profile', 'Low Profile', 'Duckbill', 'Traditional'];
   readonly handleGripOptions = ['Round Handle', 'Oval Handle', 'Semi-Oval Handle'];
   readonly sweetSpotOptions = ['Low', 'Mid', 'High', 'Extended Mid'];
-  readonly willowGradeOptions = ['Grade 1 English Willow', 'Grade 2 English Willow', 'Grade 3 English Willow', 'Grade 4 English Willow', 'Premium Kashmir Willow', 'Kashmir Willow', 'Popular Willow (Tape Ball)'];
+  readonly willowGradeOptions = ['Grade 1 English Willow', 'Grade 2 English Willow', 'Grade 3 English Willow', 'Grade 4 English Willow', 'Premium Kashmir Willow', 'Premium Kashmir Willow Hard tennis', 'Popular Willow (Soft Ball)'];
   readonly features = FEATURES;
 
   readonly products = signal<Product[]>([]);
