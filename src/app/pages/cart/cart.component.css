@@ -169,7 +169,19 @@
     border-radius: var(--th-radius-lg);
     margin-top: 1rem;
     padding: 14px;
-  }
+  }.th-delivery-estimate {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--th-navy);
+  background: var(--th-bg);
+  border-radius: var(--th-radius);
+  padding: 0.5rem 0.65rem;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.th-delivery-estimate i { color: var(--th-blue); }
   .th-cart-items { padding-bottom: 0; }
 }
 

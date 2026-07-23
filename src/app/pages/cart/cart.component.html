@@ -95,6 +95,7 @@
           <span>₹{{ cartService.cart().subtotal | number:'1.0-0' }}</span>
         </div>
         <p class="th-text-muted th-summary-note">{{ 'cart.taxNote' | t }}</p>
+        <p class="th-delivery-estimate"><i class="fa-solid fa-truck-fast"></i> {{ 'cart.deliveryEstimate' | t }}</p>
         <button class="btn-th-primary full-width" (click)="proceedToCheckout()">{{ 'cart.proceed' | t }}</button>
         <a routerLink="/products" class="th-continue-shopping">{{ 'cart.continueShopping' | t }}</a>
       </div>
