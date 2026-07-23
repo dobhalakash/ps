@@ -350,17 +350,11 @@ button { font-family: inherit; cursor: pointer; }
   .th-admin-content { width:100%; max-width:100%; min-width:0; }
 
   .th-admin-nav {
-    flex-direction:row;
-    align-items:center;
-    flex-wrap:nowrap;              /* never wrap – swipe instead */
-    gap:.5rem;
+    flex-direction:column;
+    align-items:stretch;
+    gap:.35rem;
     position:static;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior-x:contain;
-    scrollbar-width:none;          /* hide scrollbar (Firefox) */
-    padding:.5rem .25rem;
-    margin:0 -2px;
+    padding:.5rem;
     background:var(--th-surface);
     border:1px solid var(--th-border);
     border-radius:var(--th-radius-lg);
@@ -368,22 +362,16 @@ button { font-family: inherit; cursor: pointer; }
   .th-admin-nav::-webkit-scrollbar { display:none; } /* hide scrollbar (WebKit) */
 
   .th-admin-nav a {
-    flex:0 0 auto;                 /* keep natural width, don't shrink */
-    white-space:nowrap;            /* keep label on one line */
-    padding:.5rem .9rem;
-    font-size:.85rem;
-    border:1px solid var(--th-border);
-    border-radius:999px;
-    background:var(--th-bg);
+    padding:.6rem .9rem;
+    font-size:.9rem;
+    border-radius:var(--th-radius);
   }
   .th-admin-nav a.active { background:var(--th-navy); border-color:var(--th-navy); color:#fff; }
 
-  .th-admin-nav__logout {
-    margin-top:0;
-    border-top:none;
-    padding-top:.5rem !important;
-    border:1px solid rgba(220,38,38,.35) !important;
-    background:rgba(220,38,38,.06);
+ .th-admin-nav__logout {
+    margin-top:.35rem;
+    border-top:1px solid var(--th-border);
+    padding-top:.6rem !important;
   }
 }
 
