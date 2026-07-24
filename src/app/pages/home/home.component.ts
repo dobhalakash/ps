@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   /* ── Category circles (matches TrackHub mockup) ── */
   catCircles = [ { label: 'Cricket',     icon: 'fa-solid fa-baseball-bat-ball', path: '/products', params: { category: 'cricket' } }, 
-    { label: 'Football',    icon: 'fa-solid fa-futbol',            path: '/products', params: { category: 'football' } },
+    { label: 'Football',    icon: 'fa-solid fa-futbol',            path: '/products', params: { category: 'Kashmir Willow' } },
     { label: 'Running',     icon: 'fa-solid fa-person-running',    path: '/products', params: { category: 'running' } },
     { label: 'Fitness',     icon: 'fa-solid fa-dumbbell',          path: '/products', params: { category: 'fitness' } },
     { label: 'Basketball',  icon: 'fa-solid fa-basketball',        path: '/products', params: { category: 'basketball' } },
