@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -211,10 +211,15 @@ export class ProductDetailComponent implements OnInit {
     this.selectedVideo.set(url);
   }
 
+  @ViewChild('nextStepSection') nextStepSection?: ElementRef<HTMLElement>;
+
   selectSize(size: ProductSize): void {
     this.selectedSize.set(size);
+    // Move the customer forward to the next step (quantity / add to cart)
+    setTimeout(() => {
+      this.nextStepSection?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
   }
-
   changeQuantity(delta: number): void {
     const next = this.quantity() + delta;
     if (next >= 1) {

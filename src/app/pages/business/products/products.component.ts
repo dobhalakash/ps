@@ -41,7 +41,7 @@ export class BusinessProductsComponent implements OnInit {
   readonly bulkResult = signal<{ created: number; failed: number; errors: string[] } | null>(null);
   videoUrlInput = '';
 
-  readonly sizes: ProductSize[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+readonly sizes: ProductSize[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '30', '31', '32', '33', '34', '35', '36'];
 
   form: ProductRequest = this.emptyForm();
   imageUrlInput = '';

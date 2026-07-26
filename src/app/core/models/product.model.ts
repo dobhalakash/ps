@@ -1,4 +1,4 @@
-export type ProductSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
+export type ProductSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL' | '30' | '31' | '32' | '33' | '34' | '35' | '36';
 
 export interface ProductImage {
   id: number;
