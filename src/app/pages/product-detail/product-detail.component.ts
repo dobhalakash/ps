@@ -38,8 +38,14 @@ export class ProductDetailComponent implements OnInit {
   readonly addedMessage = signal(false);
   readonly showSizeGuide = signal(false);
 
-  readonly relatedProducts = signal<ProductSummary[]>([]);
+ readonly relatedProducts = signal<ProductSummary[]>([]);
   readonly recentlyViewed = signal<ProductSummary[]>([]);
+
+  readonly zoomActive = signal(false);
+  readonly lensX = signal(0);
+  readonly lensY = signal(0);
+  readonly zoomBgPos = signal({ x: 50, y: 50 });
+  private readonly lensSize = 160;
 
   readonly notifyEmail = signal('');
   readonly notifySubscribed = signal(false);
@@ -165,9 +171,40 @@ export class ProductDetailComponent implements OnInit {
     this.selectedImage.set(images[(idx - 1 + images.length) % images.length]);
   }
 
-  onGalleryKeydown(event: KeyboardEvent): void {
+ onGalleryKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowRight') { event.preventDefault(); this.nextGalleryImage(); }
     else if (event.key === 'ArrowLeft') { event.preventDefault(); this.prevGalleryImage(); }
+  }
+
+  onZoomEnter(): void {
+    if (window.matchMedia && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      return;
+    }
+    if (this.selectedVideo()) return;
+    this.zoomActive.set(true);
+  }
+
+  onZoomLeave(): void {
+    this.zoomActive.set(false);
+  }
+
+  onZoomMove(event: MouseEvent): void {
+    if (!this.zoomActive()) return;
+    const container = event.currentTarget as HTMLElement;
+    const rect = container.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    const half = this.lensSize / 2;
+    x = Math.max(half, Math.min(x, rect.width - half));
+    y = Math.max(half, Math.min(y, rect.height - half));
+
+    this.lensX.set(x - half);
+    this.lensY.set(y - half);
+
+    const bgX = (x / rect.width) * 100;
+    const bgY = (y / rect.height) * 100;
+    this.zoomBgPos.set({ x: bgX, y: bgY });
   }
 
   selectVideo(url: string): void {

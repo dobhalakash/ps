@@ -17,8 +17,9 @@
 
     <div class="th-pd-layout">
       <!-- Gallery -->
-      <div class="th-pd-gallery">
-        <div class="th-pd-main-image th-card" tabindex="0" (keydown)="onGalleryKeydown($event)">
+     <div class="th-pd-gallery">
+        <div class="th-pd-main-image th-card" tabindex="0" (keydown)="onGalleryKeydown($event)"
+             (mouseenter)="onZoomEnter()" (mouseleave)="onZoomLeave()" (mousemove)="onZoomMove($event)">
           @if ((product()!.images.length || 0) > 1) {
             <button type="button" class="th-gallery-arrow th-gallery-arrow--left" (click)="prevGalleryImage()" aria-label="Previous image">
               <i class="fa-solid fa-chevron-left"></i>
@@ -31,8 +32,19 @@
             <video [src]="selectedVideo()!" controls autoplay playsinline class="th-pd-video"></video>
           } @else {
             <img [src]="selectedImage()?.imageUrl || 'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=600'" [alt]="product()!.name">
+            @if (zoomActive()) {
+              <div class="th-zoom-lens" [style.left.px]="lensX()" [style.top.px]="lensY()"></div>
+            }
           }
         </div>
+
+        @if (zoomActive() && !selectedVideo()) {
+          <div class="th-zoom-pane"
+               [style.backgroundImage]="'url(' + (selectedImage()?.imageUrl || '') + ')'"
+               [style.backgroundPosition]="zoomBgPos().x + '% ' + zoomBgPos().y + '%'">
+          </div>
+        }
+        
         @if (product()!.images.length > 1 || (product()!.videos && product()!.videos!.length > 0)) {
           <div class="th-pd-thumbs">
             @for (img of product()!.images; track img.id) {
