@@ -548,6 +548,12 @@ button { font-family: inherit; cursor: pointer; }
   .th-empty-state { padding: 2rem 1rem; }
   .th-empty-state i { font-size: 2.2rem; margin-bottom: .6rem; }
 
+  /* Bootstrap form controls (status dropdown, tracking inputs, etc.) still render
+     at full desktop size by default — bring them down to match the compact tables */
+  .th-admin-content .form-select,
+  .th-admin-content .form-control { font-size: .78rem; padding: .3rem .5rem; min-height: auto; }
+  .th-admin-content .th-status-select { min-width: 110px; }
+
   .th-pagination { flex-wrap: wrap; gap: .6rem; }
 }
 
