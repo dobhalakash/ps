@@ -515,10 +515,11 @@ button { font-family: inherit; cursor: pointer; }
   .card { padding: 16px; }
 
   /* Dashboards: fit everything to the screen, no fixed widths */
-  .th-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .th-stat-card { padding: .9rem; }
-  .th-stat-card .th-stat-value { font-size: 1.4rem; }
-  .th-profile-card,
+  .th-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin-bottom: 1.25rem; }
+  .th-stat-card { padding: .7rem .8rem; gap: .2rem; border-radius: var(--th-radius); }
+  .th-stat-card .th-stat-label { font-size: .62rem; letter-spacing: .03em; }
+  .th-stat-card .th-stat-value { font-size: 1.2rem; }
+  .th-profile-card.,
   .th-form-card { max-width: 100%; padding: 1rem; }
   .th-content-header { flex-direction: column; align-items: stretch; }
   .th-content-header .btn-th-primary,
