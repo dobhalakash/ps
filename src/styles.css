@@ -345,6 +345,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ── Mobile / tablet: dashboards (customer, business, admin) switch to a
       horizontal, swipeable tab bar that always fits the screen width ── */
 @media (max-width:900px) {
+  /* Narrow fixed icon-rail sidebar (like a compact app dock) + scrollable content beside it */
   .th-admin-page { flex-direction:row; align-items:flex-start; gap:.6rem; width:100%; min-width:0; }
   .th-admin-sidebar {
     width:84px;
@@ -369,7 +370,7 @@ button { font-family: inherit; cursor: pointer; }
     border-radius:var(--th-radius-lg);
     max-height:calc(100vh - 5.5rem);
     overflow-y:auto;
-    scrollbar-width:none;
+    scrollbar-width:none; /* hide scrollbar (Firefox) */
   }
   .th-admin-nav::-webkit-scrollbar { display:none; } /* hide scrollbar (WebKit) */
 
@@ -394,6 +395,12 @@ button { font-family: inherit; cursor: pointer; }
     border-top:1px solid var(--th-border);
     padding-top:.55rem !important;
   }
+
+  /* Compact stat cards so the dashboard grid doesn't sprawl on small screens */
+  .th-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; margin-bottom:1.25rem; }
+  .th-stat-card { padding:.7rem .8rem; gap:.2rem; border-radius:var(--th-radius); }
+  .th-stat-card .th-stat-label { font-size:.62rem; letter-spacing:.03em; }
+  .th-stat-card .th-stat-value { font-size:1.2rem; }
 }
 
 /* ── Filter chips ── */
@@ -515,15 +522,13 @@ button { font-family: inherit; cursor: pointer; }
   .card { padding: 16px; }
 
   /* Dashboards: fit everything to the screen, no fixed widths */
-/* Dashboards: fit everything to the screen, no fixed widths */
-  /* Dashboards: fit everything to the screen, no fixed widths */
   .th-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin-bottom: 1.25rem; }
   .th-stat-card { padding: .7rem .8rem; gap: .2rem; border-radius: var(--th-radius); }
   .th-stat-card .th-stat-label { font-size: .62rem; letter-spacing: .03em; }
   .th-stat-card .th-stat-value { font-size: 1.2rem; }
   .th-profile-card,
-  .th-form-card { max-width: 100%; padding: 1rem; }
-  .th-content-header { flex-direction: column; align-items: stretch; }
+  .th-form-card { max-width: 100%; padding: .85rem; }
+  .th-content-header { flex-direction: column; align-items: stretch; margin-bottom: .9rem; gap: .5rem; }
   .th-content-header .btn-th-primary,
   .th-content-header .btn-primary { width: 100%; justify-content: center; }
   .th-form-actions { flex-wrap: wrap; }
@@ -534,6 +539,14 @@ button { font-family: inherit; cursor: pointer; }
   .th-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
   .th-data-table,
   .th-table { min-width: 560px; }
+  .th-table thead th { padding: 8px 10px; font-size: 10.5px; }
+  .th-table tbody td { padding: 8px 10px; font-size: 12.5px; }
+  .th-data-table th,
+  .th-data-table td { padding: .55rem .65rem; font-size: .8rem; }
+  .th-table-product img { width: 36px; height: 36px; }
+  .th-status-badge { font-size: .68rem; padding: .25rem .55rem; }
+  .th-empty-state { padding: 2rem 1rem; }
+  .th-empty-state i { font-size: 2.2rem; margin-bottom: .6rem; }
 
   .th-pagination { flex-wrap: wrap; gap: .6rem; }
 }
