@@ -82,7 +82,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   promoBanners = [
     {
       tag: 'New Arrivals', title: 'Running Collection', subtitle: 'Light. Fast. Unstoppable.',
-      bg: '#15181d', params: { category: 'running' }
+      bg: '#15181d', params: { category: 'running' },
+      // Muted, looping background video. Swap this path for your own file/URL —
+      // just drop the .mp4 into src/assets/videos/ (or point to any hosted URL).
+      video: 'assets/videos/new-arrivals-running.mp4'
     },
     {
       tag: 'Up To', title: '20% Off', subtitle: 'On selected items. Limited time offer!',

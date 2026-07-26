@@ -39,9 +39,12 @@
      PROMO BANNER CARDS
 ══════════════════════════════════════════════════ -->
 <section class="dn-section dn-container" appScrollReveal>
-  <div class="dn-promo-row">
+ <div class="dn-promo-row">
     <a *ngFor="let p of promoBanners" [routerLink]="'/products'" [queryParams]="p.params"
        class="dn-promo-card" [style.background]="p.bg">
+      <video *ngIf="p.video" class="dn-promo-card__bg-video" [src]="p.video"
+             autoplay muted loop playsinline></video>
+      <span *ngIf="p.video" class="dn-promo-card__overlay"></span>
       <span class="dn-promo-card__tag">{{ p.tag }}</span>
       <h3 class="dn-promo-card__title">{{ p.title }}</h3>
       <p class="dn-promo-card__subtitle">{{ p.subtitle }}</p>
