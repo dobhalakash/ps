@@ -123,8 +123,9 @@ export class CartService {
         item.savedForLater = request.savedForLater;
       }
     }
-    this.recalculate(guestCart);
+  this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
 
