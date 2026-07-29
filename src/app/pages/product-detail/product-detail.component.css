@@ -13,6 +13,18 @@
   gap: 2.5rem;
 }
 
+/* Sliding transition between gallery images (arrows, thumbnails, swipe, keyboard) */
+@keyframes th-slide-in-right-kf {
+  from { transform: translateX(28px); opacity: .3; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes th-slide-in-left-kf {
+  from { transform: translateX(-28px); opacity: .3; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+.th-slide-in-right { animation: th-slide-in-right-kf .28s ease-out; }
+.th-slide-in-left  { animation: th-slide-in-left-kf .28s ease-out; }
+
 .th-pd-gallery {
   position: relative;
 }

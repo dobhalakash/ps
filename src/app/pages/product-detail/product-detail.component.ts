@@ -148,9 +148,10 @@ export class ProductDetailComponent implements OnInit {
     this.reviewService.getReviews(id, 0, 20).subscribe(res => this.reviews.set(res.data.content));
   }
 
-  selectImage(image: ProductImage): void {
+ selectImage(image: ProductImage): void {
     this.selectedVideo.set(null);
     this.selectedImage.set(image);
+    this.playSlide('right');
   }
 
   nextGalleryImage(): void {
@@ -160,6 +161,7 @@ export class ProductDetailComponent implements OnInit {
     const idx = current ? images.findIndex(i => i.id === current.id) : 0;
     this.selectedVideo.set(null);
     this.selectedImage.set(images[(idx + 1) % images.length]);
+    this.playSlide('right');
   }
 
   prevGalleryImage(): void {
@@ -169,11 +171,29 @@ export class ProductDetailComponent implements OnInit {
     const idx = current ? images.findIndex(i => i.id === current.id) : 0;
     this.selectedVideo.set(null);
     this.selectedImage.set(images[(idx - 1 + images.length) % images.length]);
+    this.playSlide('left');
   }
 
- onGalleryKeydown(event: KeyboardEvent): void {
+  onGalleryKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowRight') { event.preventDefault(); this.nextGalleryImage(); }
     else if (event.key === 'ArrowLeft') { event.preventDefault(); this.prevGalleryImage(); }
+  }
+
+  readonly slideClass = signal<'th-slide-in-right' | 'th-slide-in-left' | ''>('');
+  private playSlide(direction: 'left' | 'right'): void {
+    this.slideClass.set('');
+    setTimeout(() => this.slideClass.set(direction === 'right' ? 'th-slide-in-right' : 'th-slide-in-left'));
+  }
+
+  private touchStartX = 0;
+  onGalleryTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.changedTouches[0].clientX;
+  }
+  onGalleryTouchEnd(event: TouchEvent): void {
+    const deltaX = event.changedTouches[0].clientX - this.touchStartX;
+    const SWIPE_THRESHOLD = 40;
+    if (deltaX > SWIPE_THRESHOLD) this.prevGalleryImage();
+    else if (deltaX < -SWIPE_THRESHOLD) this.nextGalleryImage();
   }
 
   onZoomEnter(): void {

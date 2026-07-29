@@ -62,7 +62,13 @@ h1,h2,h3,h4,h5,h6 {
   margin-top: 0;
 }
 a { text-decoration: none; color: var(--th-navy); }
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%;
+  display: block;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
 ul { margin: 0; padding: 0; list-style: none; }
 button { font-family: inherit; cursor: pointer; }
 
