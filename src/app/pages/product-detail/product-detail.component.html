@@ -75,12 +75,49 @@
           </div>
         }
 
-        <div class="th-pd-price-row">
+       <div class="th-pd-price-row">
           @if (product()!.discountPercentage > 0) {
             <span class="th-price-strike th-pd-strike">₹{{ product()!.price | number:'1.0-0' }}</span>
             <span class="th-discount-badge">{{ product()!.discountPercentage }}% OFF</span>
           }
           <span class="th-price th-pd-price">₹{{ product()!.finalPrice | number:'1.0-0' }}</span>
+        </div>
+
+        @if (product()!.variants.length > 0) {
+          <div class="th-pd-sizes">
+            <div class="th-pd-sizes__header">
+              <label>{{ 'pd.selectSize' | t }}</label>
+              @if (product()!.categorySizeGuide) {
+                <button type="button" class="th-size-guide-toggle" (click)="showSizeGuide.set(!showSizeGuide())">
+                  <i class="fa-solid fa-ruler"></i> Size Guide
+                </button>
+              }
+            </div>
+            @if (showSizeGuide() && product()!.categorySizeGuide) {
+              <div class="th-size-guide-panel">{{ product()!.categorySizeGuide }}</div>
+            }
+            <div class="th-size-options">
+              @for (variant of product()!.variants; track variant.id) {
+                <button class="th-size-chip" [class.active]="selectedSize() === variant.size"
+                        [disabled]="variant.stock === 0"
+                        (click)="selectSize(variant.size)">
+                  {{ variant.size.replace('_', ' ') }}
+                </button>
+              }
+            </div>
+            @if (selectedSize() && variantStock(selectedSize()!) === 0) {
+              <p class="th-out-of-stock-text">{{ 'pd.sizeOut' | t }}</p>
+            }
+          </div>
+        }
+
+        <div class="th-pd-quantity" #nextStepSection>
+          <label>{{ 'pd.quantity' | t }}</label>
+          <div class="th-qty-control">
+            <button (click)="changeQuantity(-1)">-</button>
+            <span>{{ quantity() }}</span>
+            <button (click)="changeQuantity(1)">+</button>
+          </div>
         </div>
 
         <div class="th-pd-shipping-info">
@@ -142,43 +179,6 @@
             </table>
           </div>
         }
-
-        @if (product()!.variants.length > 0) {
-          <div class="th-pd-sizes">
-            <div class="th-pd-sizes__header">
-              <label>{{ 'pd.selectSize' | t }}</label>
-              @if (product()!.categorySizeGuide) {
-                <button type="button" class="th-size-guide-toggle" (click)="showSizeGuide.set(!showSizeGuide())">
-                  <i class="fa-solid fa-ruler"></i> Size Guide
-                </button>
-              }
-            </div>
-            @if (showSizeGuide() && product()!.categorySizeGuide) {
-              <div class="th-size-guide-panel">{{ product()!.categorySizeGuide }}</div>
-            }
-            <div class="th-size-options">
-              @for (variant of product()!.variants; track variant.id) {
-                <button class="th-size-chip" [class.active]="selectedSize() === variant.size"
-                        [disabled]="variant.stock === 0"
-                        (click)="selectSize(variant.size)">
-                  {{ variant.size.replace('_', ' ') }}
-                </button>
-              }
-            </div>
-            @if (selectedSize() && variantStock(selectedSize()!) === 0) {
-              <p class="th-out-of-stock-text">{{ 'pd.sizeOut' | t }}</p>
-            }
-          </div>
-        }
-
-        <div class="th-pd-quantity">
-          <div class="th-pd-quantity" #nextStepSection>
-          <label>{{ 'pd.quantity' | t }}</label>
-            <button (click)="changeQuantity(-1)">-</button>
-            <span>{{ quantity() }}</span>
-            <button (click)="changeQuantity(1)">+</button>
-          </div>
-        </div>
 
         @if (authService.canShop()) {
           <div class="th-pd-actions">
