@@ -98,10 +98,13 @@ export class CartService {
       }
     }
 
+    
     this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
+
 
   updateItem(itemId: number, request: UpdateCartItemRequest): Observable<unknown> {
     if (this.authService.isLoggedIn()) {
