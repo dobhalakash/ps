@@ -137,8 +137,9 @@ export class CartService {
 
     const guestCart = this.readGuestCart();
     guestCart.items = guestCart.items.filter(i => i.id !== itemId);
-    this.recalculate(guestCart);
+ this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
 
