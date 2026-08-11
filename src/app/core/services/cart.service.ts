@@ -98,10 +98,13 @@ export class CartService {
       }
     }
 
+    
     this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
+
 
   updateItem(itemId: number, request: UpdateCartItemRequest): Observable<unknown> {
     if (this.authService.isLoggedIn()) {
@@ -120,8 +123,9 @@ export class CartService {
         item.savedForLater = request.savedForLater;
       }
     }
-    this.recalculate(guestCart);
+  this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
 
@@ -133,8 +137,9 @@ export class CartService {
 
     const guestCart = this.readGuestCart();
     guestCart.items = guestCart.items.filter(i => i.id !== itemId);
-    this.recalculate(guestCart);
+ this.recalculate(guestCart);
     this.saveGuestCart(guestCart);
+    this.cart.set(guestCart);
     return of(guestCart);
   }
 
