@@ -64,7 +64,7 @@
   color: var(--th-text);
   font-family: var(--font-body);
 }
-.sk-search__input::placeholder { color: var(--th-text-muted); }
+.sk-search__input::placeholder { color: #fff; }
 
 .sk-search__btn {
   width: 46px;
@@ -79,6 +79,7 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
 .sk-search__btn:hover { color: var(--th-blue); }
 
 .sk-search__dropdown {
