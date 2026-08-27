@@ -1,4 +1,4 @@
-import { Component, signal, HostListener } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { NavbarComponent } from './shared/navbar/navbar.component';
@@ -110,31 +110,6 @@ export class AppComponent {
 
   readonly showSplash = signal(true);
   readonly fading = signal(false);
-
-  @HostListener('document:contextmenu', ['$event'])
-  blockContextMenu(event: MouseEvent): void {
-    event.preventDefault();
-  }
-
-  @HostListener('document:dragstart', ['$event'])
-  blockDrag(event: DragEvent): void {
-    const target = event.target as HTMLElement;
-    if (target?.tagName === 'IMG') {
-      event.preventDefault();
-    }
-  }
-
-  @HostListener('document:keydown', ['$event'])
-  blockSaveShortcuts(event: KeyboardEvent): void {
-    const key = event.key.toLowerCase();
-    const ctrlOrCmd = event.ctrlKey || event.metaKey;
-    if (ctrlOrCmd && (key === 's' || key === 'u')) {
-      event.preventDefault();
-    }
-    if (event.key === 'F12' || (ctrlOrCmd && event.shiftKey && ['i', 'j', 'c'].includes(key))) {
-      event.preventDefault();
-    }
-  }
 
   constructor(private router: Router, private activityLog: ActivityLogService) {
     // Brief branded splash on first load, then fade out smoothly once the
